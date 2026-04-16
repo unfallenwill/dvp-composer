@@ -61,45 +61,12 @@ DVP 章节结构（共 8 个章节）：
 
 ## 输出
 
-写入 `/tmp/dvp_template.json`：
-
-```json
-{
-  "meta_schema": {
-    "study_name": "required",
-    "protocol_number": "required",
-    "version": "optional",
-    "date": "auto",
-    "author": "optional"
-  },
-  "sections": [
-    {
-      "title": "研究信息",
-      "type": "key-value",
-      "fields": ["研究名称", "方案编号", "研究阶段"],
-      "source": "P"
-    },
-    {
-      "title": "编辑检查",
-      "type": "table",
-      "columns": ["检查ID", "数据域", "变量", "条件", "消息", "严重程度"],
-      "source": "C+M"
-    }
-  ],
-  "formatting": {
-    "header_color": "4472C4",
-    "font": "Calibri 11"
-  }
-}
-```
+写入 `/tmp/dvp_template.json`。完整示例参见 [example-output](../example-output.md) 阶段 2 产物。
 
 ## 完成条件
 
 用户明确确认章节结构和列定义。
 
-## 回退触发
+## 回退
 
-用户在确认过程中发现需要补充信息 → 回到阶段 1。此时：
-- 将阶段 2 及之后所有已完成的任务状态重置为 `pending`
-- 在阶段 1 中处理新补充的信息，更新 `/tmp/dvp_raw_materials.json`
-- 重新进入阶段 2
+用户补充新信息时，按 SKILL.md 回退规则回到阶段 1。在阶段 1 中更新原料数据后重新进入本阶段。

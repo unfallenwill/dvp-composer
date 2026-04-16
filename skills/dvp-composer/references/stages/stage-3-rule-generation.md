@@ -57,44 +57,7 @@
 
 ## 输出
 
-写入 `/tmp/dvp_rules.json`：
-
-```json
-{
-  "sections": [
-    {
-      "title": "研究信息",
-      "type": "key-value",
-      "rules": {
-        "field_mapping": [
-          {"field": "研究名称", "source": "protocol.study_name"},
-          {"field": "方案编号", "source": "protocol.protocol_number"}
-        ]
-      }
-    },
-    {
-      "title": "编辑检查",
-      "type": "table",
-      "rules": {
-        "id_prefix": "EC",
-        "id_format": "EC{NNN}",
-        "severity_distribution": {"错误": 0.7, "警告": 0.3},
-        "variables_to_cover": ["DOB", "SEX", "ICFDATE"],
-        "check_types": ["range", "logical", "consistency", "required"],
-        "generation_order": ["required → range → logical → consistency"]
-      }
-    },
-    {
-      "title": "访视计划",
-      "type": "table",
-      "rules": {
-        "source": "protocol.visit_schedule",
-        "window_calculation": "relative to baseline"
-      }
-    }
-  ]
-}
-```
+写入 `/tmp/dvp_rules.json`。完整示例参见 [example-output](../example-output.md) 阶段 3 产物。
 
 ## 完成条件
 
