@@ -112,6 +112,5 @@ TaskCreate: "阶段 6：生成 Excel"  (blockedBy: 阶段 5)
 | [references/stages/](references/stages/) | 六个阶段的独立定义文件 |
 | [references/excel-spec.md](references/excel-spec.md) | JSON schema 与 Excel 格式规则 |
 | [references/section-catalog.md](references/section-catalog.md) | 常见 DVP 章节目录（建议性） |
-| [references/review-rules.md](references/review-rules.md) | 质量检查规则定义（R1-R6 + 外部检查） |
 | [references/example-output.md](references/example-output.md) | 各阶段中间产物 + 最终输出示例 |
 | [scripts/generate_xlsx.py](scripts/generate_xlsx.py) | Excel 生成脚本（运行时用 `${CLAUDE_SKILL_DIR}/scripts/generate_xlsx.py`） |
