@@ -2,13 +2,20 @@
 name: dvp-composer
 description: >
   交互式 DVP（数据验证计划）生成器。This skill should be used when the user asks to
-  "编写DVP"、"创建数据验证计划"、"生成DVP"、"compose DVP"、"create DVP"、"help with DVP"，
-  或提及临床数据验证计划相关任务。读取 Protocol/CRF/DMP 文档，通过逐步问答收集信息，
-  经逻辑审查后生成格式化的 Excel DVP 文档。
+  "编写DVP", "创建数据验证计划", "生成DVP", "compose DVP", "create DVP", "help with DVP",
+  "write a DVP", "edit checks", "编辑检查", "数据验证", "数据质量", "data quality",
+  or mentions clinical data verification plans, edit check definitions, or data quality
+  planning for a clinical study. 读取 Protocol/CRF/DMP 文档，通过逐步问答收集信息，
+  经逻辑审查后输出格式化 Excel。
 argument-hint: "[Protocol/CRF/DMP 文件路径，或研究名称]"
 context: fork
-agent: general-purpose
-allowed-tools: "Bash(python3 *) Bash(pip3 *) Read Write Grep Glob"
+allowed-tools:
+  - "Bash(python3 *)"
+  - "Bash(pip3 *)"
+  - "Read"
+  - "Write"
+  - "Grep"
+  - "Glob"
 user-invocable: true
 ---
 
@@ -97,6 +104,7 @@ user-invocable: true
 - 预填充文档信息减少重复输入
 - 用户可随时说"跳过"、"稍后填写"、"返回修改"
 - 审查报告中的错误项必须修正才能继续
+- 展示当前进度（如"阶段 3/5，章节 4/8"），让用户始终知道整体进展位置
 
 ## 辅助文件
 

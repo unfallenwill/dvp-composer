@@ -153,10 +153,33 @@ RENDERERS = {
 
 # ── Main Generation ─────────────────────────────────────────────────────────
 
+def parse_font_spec(spec, default_name="Calibri", default_size=11):
+    """Parse a font spec like 'Calibri 11' into name and size."""
+    if not spec:
+        return default_name, default_size
+    parts = spec.strip().rsplit(" ", 1)
+    if len(parts) == 2 and parts[1].isdigit():
+        return parts[0], int(parts[1])
+    return parts[0], default_size
+
+
 def generate(data, output_path):
     wb = Workbook()
     ws = wb.active
     ws.title = "DVP"
+
+    # ── Read formatting overrides ────────────────────────────────────────
+    fmt = data.get("formatting", {})
+    header_color = fmt.get("header_color", "4472C4")
+    font_name, font_size = parse_font_spec(fmt.get("font", "Calibri 11"))
+
+    # Override style constants with formatting values
+    global HEADER_FILL, HEADER_FONT, SECTION_TITLE_FONT, LABEL_FONT, NORMAL_FONT
+    HEADER_FILL = PatternFill(start_color=header_color, end_color=header_color, fill_type="solid")
+    HEADER_FONT = Font(name=font_name, size=font_size, bold=True, color="FFFFFF")
+    SECTION_TITLE_FONT = Font(name=font_name, size=12, bold=True, color="1F4E79")
+    LABEL_FONT = Font(name=font_name, size=font_size, bold=True)
+    NORMAL_FONT = Font(name=font_name, size=font_size)
 
     # ── Meta header ──────────────────────────────────────────────────────
     meta = data.get("meta", {})
@@ -169,7 +192,7 @@ def generate(data, output_path):
     author = meta.get("author", "")
 
     ws.cell(row=row, column=1, value="DVP - 数据验证计划").font = Font(
-        name="Calibri", size=16, bold=True, color="1F4E79"
+        name=font_name, size=16, bold=True, color="1F4E79"
     )
     ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=4)
     row += 1
@@ -232,8 +255,16 @@ def main():
             output_path = sys.argv[idx + 1]
 
     if not output_path:
-        base = os.path.splitext(json_path)[0]
-        output_path = base + ".xlsx"
+        # Try meta.output_path from JSON, then fall back to same-name .xlsx
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                data_preview = json.load(f)
+            output_path = data_preview.get("meta", {}).get("output_path", "")
+        except Exception:
+            output_path = ""
+        if not output_path:
+            base = os.path.splitext(json_path)[0]
+            output_path = base + ".xlsx"
 
     # Read and validate JSON
     try:
@@ -263,6 +294,12 @@ def main():
         if stype not in RENDERERS:
             print(f"ERROR: Section {i} has unknown type '{stype}'. Valid: {list(RENDERERS.keys())}")
             sys.exit(1)
+        # Validate table row lengths match columns
+        if stype == "table" and "columns" in section:
+            expected = len(section["columns"])
+            for ri, row_data in enumerate(section.get("rows", [])):
+                if len(row_data) != expected:
+                    print(f"WARNING: Section '{section['title']}' row {ri} has {len(row_data)} values, expected {expected}")
 
     result = generate(data, output_path)
     section_count = len(data["sections"])

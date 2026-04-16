@@ -24,8 +24,8 @@
     }
   ],
   "formatting": {
-    "header_color": "string — 十六进制颜色（默认 4472C4）",
-    "font": "string — 字体（默认 Calibri 11）"
+    "header_color": "string — 十六进制颜色（默认 4472C4），用于表头背景和章节标题",
+    "font": "string — 字体规格如 'Calibri 11'（格式: 字体名+空格+字号），应用于所有单元格"
   }
 }
 ```
