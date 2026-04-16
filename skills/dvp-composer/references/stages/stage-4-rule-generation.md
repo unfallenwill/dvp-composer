@@ -57,7 +57,7 @@
 
 ## 输出
 
-写入 `/tmp/dvp_rules.json`。完整示例参见 [example-output](../example-output.md) 阶段 3 产物。
+写入 `/tmp/dvp_rules.json`。完整示例参见 [example-output](../example-output.md) 阶段 4 产物。
 
 ## 完成条件
 
