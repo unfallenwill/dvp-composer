@@ -1,0 +1,10 @@
+{
+  "name": "dvp-composer",
+  "version": "0.1.0",
+  "description": "Interactive DVP (Data Verification Plan) generator for clinical data management. Reads Protocol/CRF/DMP documents, collects information through guided Q&A, performs logic review, and outputs formatted Excel files.",
+  "author": {
+    "name": "treadonsnow"
+  },
+  "license": "MIT",
+  "keywords": ["clinical", "DVP", "data-management", "CRO", "verification"]
+}
