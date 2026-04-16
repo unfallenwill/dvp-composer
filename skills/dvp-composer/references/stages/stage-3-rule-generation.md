@@ -1,0 +1,101 @@
+# 阶段 3：规则生成
+
+## 职责
+
+为需要生成数据的章节定义生成规则/逻辑。
+
+## 输入
+
+- `/tmp/dvp_raw_materials.json`（阶段 1 的输出）
+- `/tmp/dvp_template.json`（阶段 2 的输出）
+
+## 做法
+
+### 1. 遍历章节生成规则
+
+对模板中的每个章节，生成对应的规则：
+
+**key-value 章节**：
+- 字段映射规则：`{ "field": "研究名称", "source": "protocol.study_name" }`
+- 缺失字段标记为需手动填充
+
+**table 章节**：
+- ID 编号规则：前缀、格式（如 `EC{NNN}`）、起始编号
+- 变量覆盖范围：基于 CRF 字段列表确定需要覆盖的变量
+- 检查类型分类（如范围检查、逻辑检查、一致性检查、必填检查）
+- 生成顺序
+- 严重程度分配策略
+
+**narrative 章节**：
+- 内容生成指引：主题、覆盖要点、参考的文档信息
+- 段落结构建议
+
+### 2. 展示规则
+
+```
+=== 规则生成 ===
+
+章节: 编辑检查
+  - ID 格式: EC001, EC002, ...
+  - 覆盖变量: DOB, SEX, ICFDATE, SYSBP, DIABP, HR, LBTEST, AESTDAT, CMTRT (共 9 个)
+  - 检查类型: 范围检查 → 逻辑检查 → 一致性检查 → 必填检查
+  - 严重程度分配: 错误 70%, 警告 30%
+  - 预计生成: ~15-20 条
+
+章节: 访视计划
+  - 数据来源: Protocol 访视计划表
+  - 窗口计算: 相对基线偏移
+
+...（其他章节）
+
+请确认以上规则，或修正。
+```
+
+### 3. 用户确认或修正
+
+用户可以修正任何规则。修正后更新规则文件。
+
+## 输出
+
+写入 `/tmp/dvp_rules.json`：
+
+```json
+{
+  "sections": [
+    {
+      "title": "研究信息",
+      "type": "key-value",
+      "rules": {
+        "field_mapping": [
+          {"field": "研究名称", "source": "protocol.study_name"},
+          {"field": "方案编号", "source": "protocol.protocol_number"}
+        ]
+      }
+    },
+    {
+      "title": "编辑检查",
+      "type": "table",
+      "rules": {
+        "id_prefix": "EC",
+        "id_format": "EC{NNN}",
+        "severity_distribution": {"错误": 0.7, "警告": 0.3},
+        "variables_to_cover": ["DOB", "SEX", "ICFDATE"],
+        "check_types": ["range", "logical", "consistency", "required"],
+        "generation_order": ["required → range → logical → consistency"]
+      }
+    },
+    {
+      "title": "访视计划",
+      "type": "table",
+      "rules": {
+        "source": "protocol.visit_schedule",
+        "window_calculation": "relative to baseline"
+      }
+    }
+  ]
+}
+```
+
+## 完成条件
+
+用户确认各章节的生成规则。

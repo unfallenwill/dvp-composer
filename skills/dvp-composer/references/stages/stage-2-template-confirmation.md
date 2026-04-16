@@ -1,0 +1,105 @@
+# 阶段 2：模板确认
+
+## 职责
+
+确认 DVP 的章节结构、列定义和格式。
+
+## 输入
+
+- `/tmp/dvp_raw_materials.json`（阶段 1 的输出）
+- 用户可能提供的 DVP 模板文件
+- [section-catalog](../section-catalog.md)（内置参考）
+
+## 做法
+
+### 1. 确定章节来源
+
+三种方式，按优先级：
+
+1. **用户提供现有模板** → 读取并提取章节结构
+2. **用户未指定** → 参考 section-catalog 展示可选章节
+3. **用户直接描述** → 解析描述，与 section-catalog 匹配章节类型
+
+### 2. 标注预填充状态
+
+根据原料数据标注每个章节的数据来源：
+
+- **P**：有 Protocol 信息可预填充
+- **C**：有 CRF 信息可预填充
+- **D**：有 DMP 信息可预填充
+- **M**：需要用户手动提供
+
+### 3. 展示章节列表
+
+展示完整的章节列表供用户确认：
+
+```
+=== 模板确认 ===
+
+DVP 章节结构（共 8 个章节）：
+
+[P] 1. 研究信息         (key-value, 8 字段)
+[P] 2. 数据验证范围      (narrative)
+[P] 3. 访视计划          (table, 4 列)
+[C] 4. 编辑检查          (table, 6 列)
+[D] 5. 数据录入指南      (narrative + table)
+[D] 6. Query 管理        (narrative + key-value)
+[M] 7. SDTM 映射         (table, 4 列)
+[M] 8. 签字与审批         (key-value, 4 字段)
+
+请确认以上结构，或调整章节顺序、增删章节、修改列定义。
+```
+
+### 4. 用户调整
+
+用户可以：
+- 调整章节顺序
+- 增删章节
+- 修改 table 类型章节的列定义
+- 修改章节类型
+- 补充信息（触发回退到阶段 1）
+
+## 输出
+
+写入 `/tmp/dvp_template.json`：
+
+```json
+{
+  "meta_schema": {
+    "study_name": "required",
+    "protocol_number": "required",
+    "version": "optional",
+    "date": "auto",
+    "author": "optional"
+  },
+  "sections": [
+    {
+      "title": "研究信息",
+      "type": "key-value",
+      "fields": ["研究名称", "方案编号", "研究阶段"],
+      "source": "P"
+    },
+    {
+      "title": "编辑检查",
+      "type": "table",
+      "columns": ["检查ID", "数据域", "变量", "条件", "消息", "严重程度"],
+      "source": "C+M"
+    }
+  ],
+  "formatting": {
+    "header_color": "4472C4",
+    "font": "Calibri 11"
+  }
+}
+```
+
+## 完成条件
+
+用户明确确认章节结构和列定义。
+
+## 回退触发
+
+用户在确认过程中发现需要补充信息 → 回到阶段 1。此时：
+- 将阶段 2 及之后所有已完成的任务状态重置为 `pending`
+- 在阶段 1 中处理新补充的信息，更新 `/tmp/dvp_raw_materials.json`
+- 重新进入阶段 2

@@ -1,8 +1,171 @@
 # 示例输出
 
-以下是一个完整的 DVP JSON 中间文件示例，以及对应 Excel 输出的描述。
+以下是一个完整的 DVP 生成过程中各阶段的中间产物和最终输出示例。
 
-## JSON 示例
+## 阶段 1 产物：原料数据
+
+文件：`/tmp/dvp_raw_materials.json`
+
+```json
+{
+  "sources": {
+    "protocol": {
+      "extracted": {
+        "study_name": "ABC-123",
+        "protocol_number": "PROTO-2024-001",
+        "phase": "III期",
+        "design": "随机、双盲、安慰剂对照、多中心",
+        "indication": "2型糖尿病",
+        "target_enrollment": "300",
+        "visit_schedule": [
+          {"name": "Screening", "window": "D-28 ~ D-1", "day": "-28 ~ -1", "domains": "人口学、知情同意、入排标准"},
+          {"name": "Baseline (Day 1)", "window": "D1", "day": "0", "domains": "生命体征、实验室检查、合并用药"},
+          {"name": "Visit 2 (Week 4)", "window": "±3天", "day": "28", "domains": "生命体征、AE、疗效评估"},
+          {"name": "Visit 3 (Week 8)", "window": "±3天", "day": "56", "domains": "生命体征、实验室检查、AE"},
+          {"name": "Visit 4 (Week 12)", "window": "±5天", "day": "84", "domains": "生命体征、实验室检查、AE、疗效评估"},
+          {"name": "End of Study", "window": "±5天", "day": "84", "domains": "全部数据域"},
+          {"name": "Follow-up", "window": "D+14", "day": "98", "domains": "AE、合并用药"}
+        ]
+      },
+      "missing": ["研究中心数量", "申办方名称"]
+    },
+    "crf": {
+      "extracted": {
+        "forms": [
+          {"name": "人口学", "fields": ["SUBJID", "DOB", "SEX", "ETHNIC"]},
+          {"name": "知情同意", "fields": ["ICFDATE", "RFICDATE"]},
+          {"name": "生命体征", "fields": ["VSDAT", "SYSBP", "DIABP", "HR", "TEMP", "WEIGHT", "HEIGHT"]},
+          {"name": "实验室", "fields": ["LBTEST", "LBORRES", "LBUNIT", "LBNRLO", "LBNRHI"]},
+          {"name": "AE", "fields": ["AETERM", "AESTDAT", "AEENDAT", "AESER", "AESDTH", "AESHOSP", "AESDISAB", "AESLIFE", "AESCONG", "AESMIE"]},
+          {"name": "合并用药", "fields": ["CMTRT", "CMDOSE", "CMINDC", "CMSTDAT", "CMENDAT"]}
+        ],
+        "total_fields": 33
+      },
+      "missing": []
+    },
+    "dmp": {
+      "extracted": {
+        "edc_system": "Medidata Rave",
+        "query_response_sla": "7个工作日"
+      },
+      "missing": ["数据库版本", "数据管理流程细节"]
+    }
+  },
+  "user_supplied": {
+    "cro_name": "XYZ CRO",
+    "dm_name": "张三"
+  },
+  "clarifications": [
+    {"question": "研究设计是什么类型？", "answer": "随机、双盲、安慰剂对照、多中心"}
+  ]
+}
+```
+
+## 阶段 2 产物：模板定义
+
+文件：`/tmp/dvp_template.json`
+
+```json
+{
+  "meta_schema": {
+    "study_name": "required",
+    "protocol_number": "required",
+    "version": "optional",
+    "date": "auto",
+    "author": "optional"
+  },
+  "sections": [
+    {
+      "title": "研究信息",
+      "type": "key-value",
+      "fields": ["研究名称", "方案编号", "研究阶段", "研究设计", "适应症", "目标入组人数", "申办方", "CRO", "数据经理"],
+      "source": "P+M"
+    },
+    {
+      "title": "访视计划",
+      "type": "table",
+      "columns": ["访视名称", "访视窗口", "相对天数", "数据域"],
+      "source": "P"
+    },
+    {
+      "title": "编辑检查",
+      "type": "table",
+      "columns": ["检查ID", "数据域", "变量", "条件", "消息", "严重程度"],
+      "source": "C+M"
+    },
+    {
+      "title": "数据验证范围",
+      "type": "narrative",
+      "source": "P+D"
+    }
+  ],
+  "formatting": {
+    "header_color": "4472C4",
+    "font": "Calibri 11"
+  }
+}
+```
+
+## 阶段 3 产物：生成规则
+
+文件：`/tmp/dvp_rules.json`
+
+```json
+{
+  "sections": [
+    {
+      "title": "研究信息",
+      "type": "key-value",
+      "rules": {
+        "field_mapping": [
+          {"field": "研究名称", "source": "protocol.study_name"},
+          {"field": "方案编号", "source": "protocol.protocol_number"},
+          {"field": "研究阶段", "source": "protocol.phase"},
+          {"field": "研究设计", "source": "protocol.design"},
+          {"field": "适应症", "source": "protocol.indication"},
+          {"field": "目标入组人数", "source": "protocol.target_enrollment"},
+          {"field": "CRO", "source": "user_supplied.cro_name"},
+          {"field": "数据经理", "source": "user_supplied.dm_name"},
+          {"field": "申办方", "source": "missing"}
+        ]
+      }
+    },
+    {
+      "title": "访视计划",
+      "type": "table",
+      "rules": {
+        "source": "protocol.visit_schedule",
+        "columns": ["访视名称", "访视窗口", "相对天数", "数据域"]
+      }
+    },
+    {
+      "title": "编辑检查",
+      "type": "table",
+      "rules": {
+        "id_prefix": "EC",
+        "id_format": "EC{NNN}",
+        "start_number": 1,
+        "severity_distribution": {"错误": 0.7, "警告": 0.3},
+        "variables_to_cover": ["DOB", "SEX", "ICFDATE", "RFICDATE", "SYSBP", "DIABP", "HR", "TEMP", "WEIGHT", "HEIGHT", "LBTEST", "LBORRES", "AESTDAT", "AEENDAT", "AESER", "CMTRT", "CMDOSE"],
+        "check_types": ["required", "range", "logical", "consistency"],
+        "generation_order": ["required → range → logical → consistency"]
+      }
+    },
+    {
+      "title": "数据验证范围",
+      "type": "narrative",
+      "rules": {
+        "topics": ["验证范围", "验证方法", "EDC 系统"],
+        "references": ["protocol.study_name", "dmp.edc_system"]
+      }
+    }
+  ]
+}
+```
+
+## 阶段 4 产物：完整 DVP 数据
+
+文件：`/tmp/dvp_data.json`
 
 ```json
 {
@@ -25,7 +188,8 @@
         {"field": "研究设计", "value": "随机、双盲、安慰剂对照、多中心"},
         {"field": "适应症", "value": "2型糖尿病"},
         {"field": "目标入组人数", "value": "300"},
-        {"field": "申办方", "value": "XYZ制药有限公司"},
+        {"field": "申办方", "value": "(待补充)"},
+        {"field": "CRO", "value": "XYZ CRO"},
         {"field": "数据经理", "value": "张三"}
       ]
     },
@@ -63,7 +227,7 @@
     {
       "title": "数据验证范围",
       "type": "narrative",
-      "content": "本 DVP 适用于 ABC-123 研究的所有临床数据验证工作。验证范围涵盖 EDC 系统中收集的所有数据域，包括但不限于：人口学数据、知情同意、入排标准、生命体征、实验室检查、不良事件、合并用药和疗效评估。\n\n数据验证方法包括：\n1. 编辑检查（Edit Checks）— 自动化逻辑检查\n2. 数据一致性审查 — 跨表单数据交叉验证\n3. 来源数据核查（SDV）— 与原始文件对比验证\n4. 医学审查 — 由医学监查员进行医学合理性审查"
+      "content": "本 DVP 适用于 ABC-123 研究的所有临床数据验证工作。验证范围涵盖 EDC 系统（Medidata Rave）中收集的所有数据域，包括但不限于：人口学数据、知情同意、生命体征、实验室检查、不良事件、合并用药和疗效评估。\n\n数据验证方法包括：\n1. 编辑检查（Edit Checks）— 自动化逻辑检查\n2. 数据一致性审查 — 跨表单数据交叉验证\n3. 来源数据核查（SDV）— 与原始文件对比验证\n4. 医学审查 — 由医学监查员进行医学合理性审查"
     }
   ],
   "formatting": {
@@ -73,7 +237,7 @@
 }
 ```
 
-## Excel 输出描述
+## 阶段 6 产物：Excel 文件
 
 生成的 `DVP_ABC-123_2026-04-16.xlsx` 文件包含一个名为 "DVP" 的 Sheet，布局如下：
 
@@ -93,24 +257,24 @@
 
 - Row 8: 章节标题 "研究信息"（浅蓝背景，合并2列）
 - Row 9: 表头 "字段" | "值"（蓝色背景，白色粗体）
-- Row 10-17: 8 行 key-value 数据（偶数行浅蓝背景）
+- Row 10-18: 9 行 key-value 数据（偶数行浅蓝背景）
 
-### 访视计划（Row 19-27）
+### 访视计划（Row 20-28）
 
-- Row 19: 章节标题 "访视计划"
-- Row 20: 表头 "访视名称" | "访视窗口" | "相对天数" | "数据域"
-- Row 21-27: 7 行表格数据
+- Row 20: 章节标题 "访视计划"
+- Row 21: 表头 "访视名称" | "访视窗口" | "相对天数" | "数据域"
+- Row 22-28: 7 行表格数据
 
-### 编辑检查（Row 29-40）
+### 编辑检查（Row 30-41）
 
-- Row 29: 章节标题 "编辑检查"
-- Row 30: 表头 "检查ID" | "数据域" | "变量" | "条件" | "消息" | "严重程度"
-- Row 31-40: 10 行表格数据
+- Row 30: 章节标题 "编辑检查"
+- Row 31: 表头 "检查ID" | "数据域" | "变量" | "条件" | "消息" | "严重程度"
+- Row 32-41: 10 行表格数据
 
-### 数据验证范围（Row 42-43）
+### 数据验证范围（Row 43-44）
 
-- Row 42: 章节标题 "数据验证范围"
-- Row 43: 叙述文本（自动换行）
+- Row 43: 章节标题 "数据验证范围"
+- Row 44: 叙述文本（自动换行）
 
 ### 格式特征
 

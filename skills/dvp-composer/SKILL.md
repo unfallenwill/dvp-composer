@@ -5,7 +5,7 @@ description: >
   "编写DVP", "创建数据验证计划", "生成DVP", "compose DVP", "create DVP", "help with DVP",
   "write a DVP", "edit checks", "编辑检查", "数据验证", "数据质量", "data quality",
   or mentions clinical data verification plans, edit check definitions, or data quality
-  planning for a clinical study. 读取 Protocol/CRF/DMP 文档，经逻辑审查后输出格式化 Excel。
+  planning for a clinical study. 通过六阶段工作流（原料收集→模板确认→规则生成→全量生成→质量检查→生成Excel）输出格式化 DVP。
 argument-hint: "[Protocol/CRF/DMP 文件路径，或研究名称]"
 context: fork
 allowed-tools:
@@ -20,7 +20,12 @@ user-invocable: true
 
 # DVP Composer
 
-生成 DVP（Data Verification Plan，数据验证计划），输出格式化 Excel 文件。
+通过六阶段工作流生成 DVP（Data Verification Plan，数据验证计划），输出格式化 Excel 文件。
+
+## 启动方式
+
+- 用户提供了文件路径参数 → 直接进入阶段 1，读取并提取文档信息
+- 用户仅描述需求 → 创建任务后进入阶段 1，通过问答收集信息
 
 ## 适用范围
 
@@ -35,80 +40,78 @@ user-invocable: true
 - 不验证内容是否符合监管要求
 - 不生成 PDF/Word 输出（仅 .xlsx）
 
-## 信息收集
+## 工作流
 
-### 参考文档
+```
+[开始]
+  → 1. 原料收集
+  ⇄ 2. 模板确认          ← 用户补充新信息时回到阶段 1
+  → 3. 规则生成
+  → 4. 全量生成
+  → 5. 质量检查
+  → 6. 生成 Excel
+→ [结束]
+```
 
-用户可能提供 Protocol、CRF、DMP 等参考文档（可提供任意组合或跳过）。
+### 设计原则
 
-1. 用 Read 读取文档
-2. 提取关键信息：
-   - Protocol → 研究名称、编号、设计、终点、访视计划
-   - CRF → 表单名称、字段列表、字段类型
-   - DMP → 数据管理流程、质量标准
-3. 将提取结果存入 `/tmp/dvp_extracted.json`
+- **阶段自治**：每个阶段是黑盒，只关心自己的输入和输出
+- **最小传递**：只传递下游需要的数据，能少则少
+- **按需索取**：阶段不关心数据怎么来的，缺了就报告出来
+- **乐观推进**：能走就走，不够就记
+- **发现式回退**：用户看到具体产物才发现缺什么，此时回到阶段 1 补充
 
-提取后向用户展示摘要（标注来源和缺失项），让用户确认或补充。
+### 回退规则
 
-### 章节结构
+| 情形 | 根因 | 处理 |
+|------|------|------|
+| 用户补充了信息 | 输入变了 | 回到阶段 1 |
+| 用户纠正了思路 | 处理错了 | 当前阶段修正 |
 
-确定 DVP 的章节结构。来源可以是：
-- 用户提供现有 DVP 模板 → 读取并提取结构
-- 从常见章节选择 → 参考 [section-catalog](references/section-catalog.md)
-- 用户直接描述
+### 任务追踪
 
-展示章节列表供用户确认。用户可调整顺序、增删、改名。
+工作流启动时，立即创建全部 6 个阶段任务：
 
-### 章节内容
+```
+TaskCreate: "阶段 1：原料收集"
+TaskCreate: "阶段 2：模板确认"    (blockedBy: 阶段 1)
+TaskCreate: "阶段 3：规则生成"    (blockedBy: 阶段 2)
+TaskCreate: "阶段 4：全量生成"    (blockedBy: 阶段 3)
+TaskCreate: "阶段 5：质量检查"    (blockedBy: 阶段 4)
+TaskCreate: "阶段 6：生成 Excel"  (blockedBy: 阶段 5)
+```
 
-为每个章节填充内容：
-- 优先使用文档提取的信息预填充
-- 缺失或不明确的部分，向用户询问澄清
-- 用户可以跳过任何章节（留占位符）
+每个阶段开始时 TaskUpdate 为 `in_progress`，完成时更新为 `completed` 并在 description 中记录产出摘要。
 
-各类型章节的填充方式见 [flow-guide](references/flow-guide.md)。
+回退处理：当用户补充信息触发回退到阶段 1 时，将阶段 2 及之后所有已完成的任务状态重置为 `pending`。
 
-## 逻辑审查
+## 阶段定义
 
-按 [review-rules](references/review-rules.md) 执行六项检查：
+| 阶段 | 职责 | 详细定义 |
+|------|------|---------|
+| 1. 原料收集 | 收集文档和信息，澄清歧义 | [stage-1-raw-materials](references/stages/stage-1-raw-materials.md) |
+| 2. 模板确认 | 确认章节结构、列定义和格式 | [stage-2-template-confirmation](references/stages/stage-2-template-confirmation.md) |
+| 3. 规则生成 | 为各章节定义生成规则/逻辑 | [stage-3-rule-generation](references/stages/stage-3-rule-generation.md) |
+| 4. 全量生成 | 批量生成所有章节的完整数据 | [stage-4-full-generation](references/stages/stage-4-full-generation.md) |
+| 5. 质量检查 | 验证数据的正确性和完整性 | [stage-5-quality-check](references/stages/stage-5-quality-check.md) |
+| 6. 生成 Excel | 输出格式化 Excel 文件 | [stage-6-generate-excel](references/stages/stage-6-generate-excel.md) |
 
-- R1 字段引用完整性
-- R2 数据一致性
-- R3 命名规范
-- R4 业务逻辑合理性
-- R5 规则冲突检测
-- R6 交叉引用一致性
-
-输出审查报告（✅/⚠️/❌）：
-- ❌ 错误项必须修正
-- ⚠️ 警告项由用户决定是否处理
-
-## 生成输出
-
-1. 组装 JSON 数据（格式见 [excel-spec](references/excel-spec.md)）
-2. 确认输出路径（默认 `./DVP_<研究名>_<日期>.xlsx`）
-3. 执行生成脚本：
-   ```
-   python3 ${CLAUDE_SKILL_DIR}/scripts/generate_xlsx.py <json_path> --output <output_path>
-   ```
-4. 如 openpyxl 未安装，先执行 `pip3 install openpyxl`
-
-生成完成后展示预览摘要。
+执行某个阶段前，先读取对应的阶段定义文件。
 
 ## 澄清原则
 
 - 信息不完整或有歧义时才询问用户，不制造不必要的对话轮次
 - 每次只澄清一个主题
 - 用户可随时说"跳过"、"稍后填写"、"返回修改"
-- 展示当前进度（如"章节 4/8"），让用户知道进展位置
+- 当前阶段编号始终可见，让用户知道进展位置
 
 ## 辅助文件
 
 | 文件 | 用途 |
 |------|------|
-| [references/flow-guide.md](references/flow-guide.md) | 详细流程指南 |
+| [references/stages/](references/stages/) | 六个阶段的独立定义文件 |
 | [references/excel-spec.md](references/excel-spec.md) | JSON schema 与 Excel 格式规则 |
 | [references/section-catalog.md](references/section-catalog.md) | 常见 DVP 章节目录（建议性） |
-| [references/review-rules.md](references/review-rules.md) | 逻辑审查规则定义（R1-R6） |
-| [references/example-output.md](references/example-output.md) | 完整 JSON + Excel 输出示例 |
+| [references/review-rules.md](references/review-rules.md) | 质量检查规则定义（R1-R6 + 外部检查） |
+| [references/example-output.md](references/example-output.md) | 各阶段中间产物 + 最终输出示例 |
 | [scripts/generate_xlsx.py](scripts/generate_xlsx.py) | Excel 生成脚本 |
