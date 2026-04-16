@@ -5,7 +5,7 @@ description: >
   "编写DVP", "创建数据验证计划", "生成DVP", "compose DVP", "create DVP", "help with DVP",
   "write a DVP", "edit checks", "编辑检查", "数据验证", "数据质量", "data quality",
   or mentions clinical data verification plans, edit check definitions, or data quality
-  planning for a clinical study. 通过六阶段工作流（原料收集→模板确认→规则生成→全量生成→质量检查→生成Excel）输出格式化 DVP。
+  planning for a clinical study. 通过六阶段工作流（资料收集→模板确认→规则生成→全量生成→质量检查→生成Excel）输出格式化 DVP。
 argument-hint: "[Protocol/CRF/DMP 文件路径，或研究名称]"
 allowed-tools:
   - "Bash(python3 *)"
@@ -26,7 +26,7 @@ user-invocable: true
 1. 创建全部 6 个阶段任务：
 
 ```
-TaskCreate: "阶段 1：原料收集"
+TaskCreate: "阶段 1：资料收集"
 TaskCreate: "阶段 2：模板确认"    (blockedBy: 阶段 1)
 TaskCreate: "阶段 3：规则生成"    (blockedBy: 阶段 2)
 TaskCreate: "阶段 4：全量生成"    (blockedBy: 阶段 3)
@@ -47,7 +47,7 @@ TaskCreate: "阶段 6：生成 Excel"  (blockedBy: 阶段 5)
 
 | # | 阶段 | 定义文件 |
 |---|------|---------|
-| 1 | 原料收集 | [stage-1-raw-materials](references/stages/stage-1-raw-materials.md) |
+| 1 | 资料收集 | [stage-1-raw-materials](references/stages/stage-1-raw-materials.md) |
 | 2 | 模板确认 | [stage-2-template-confirmation](references/stages/stage-2-template-confirmation.md) |
 | 3 | 规则生成 | [stage-3-rule-generation](references/stages/stage-3-rule-generation.md) |
 | 4 | 全量生成 | [stage-4-full-generation](references/stages/stage-4-full-generation.md) |
