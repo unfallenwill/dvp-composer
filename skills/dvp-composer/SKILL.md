@@ -7,7 +7,6 @@ description: >
   or mentions clinical data verification plans, edit check definitions, or data quality
   planning for a clinical study. 通过六阶段工作流（原料收集→模板确认→规则生成→全量生成→质量检查→生成Excel）输出格式化 DVP。
 argument-hint: "[Protocol/CRF/DMP 文件路径，或研究名称]"
-context: fork
 allowed-tools:
   - "Bash(python3 *)"
   - "Bash(pip3 *)"
