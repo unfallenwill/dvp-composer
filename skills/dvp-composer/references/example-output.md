@@ -61,7 +61,31 @@
 }
 ```
 
-## 阶段 2 产物：模板定义
+## 阶段 2 产物：探索结果
+
+追加到 `/tmp/dvp_raw_materials.json`：
+
+```json
+{
+  "exploration": {
+    "study_overview": "ABC-123，III期，随机双盲安慰剂对照多中心研究，目标入组300人",
+    "complexity": "高（多中心、7个访视、6个数据域）",
+    "key_domains": ["人口学", "知情同意", "生命体征", "实验室", "AE", "合并用药"],
+    "conflicts": [],
+    "ambiguities": [],
+    "domain_readiness": [
+      {"domain": "人口学", "status": "可生成"},
+      {"domain": "知情同意", "status": "可生成"},
+      {"domain": "生命体征", "status": "可生成"},
+      {"domain": "实验室", "status": "部分可生成", "missing": ["正常范围定义"]},
+      {"domain": "AE", "status": "可生成"},
+      {"domain": "合并用药", "status": "可生成"}
+    ]
+  }
+}
+```
+
+## 阶段 3 产物：模板定义
 
 文件：`/tmp/dvp_template.json`
 
@@ -106,7 +130,7 @@
 }
 ```
 
-## 阶段 3 产物：生成规则
+## 阶段 4 产物：生成规则
 
 文件：`/tmp/dvp_rules.json`
 
@@ -163,7 +187,7 @@
 }
 ```
 
-## 阶段 4 产物：完整 DVP 数据
+## 阶段 5 产物：完整 DVP 数据
 
 文件：`/tmp/dvp_data.json`
 
@@ -237,7 +261,7 @@
 }
 ```
 
-## 阶段 6 产物：Excel 文件
+## 阶段 7 产物：Excel 文件
 
 生成的 `DVP_ABC-123_2026-04-16.xlsx` 文件包含一个名为 "DVP" 的 Sheet，布局如下：
 

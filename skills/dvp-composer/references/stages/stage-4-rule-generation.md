@@ -1,4 +1,4 @@
-# 阶段 3：规则生成
+# 阶段 4：规则生成
 
 ## 职责
 
@@ -7,7 +7,7 @@
 ## 输入
 
 - `/tmp/dvp_raw_materials.json`（阶段 1 的输出）
-- `/tmp/dvp_template.json`（阶段 2 的输出）
+- `/tmp/dvp_template.json`（阶段 3 的输出）
 
 ## 做法
 

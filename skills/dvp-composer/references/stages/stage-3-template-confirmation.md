@@ -1,4 +1,4 @@
-# 阶段 2：模板确认
+# 阶段 3：模板确认
 
 ## 职责
 
@@ -6,7 +6,7 @@
 
 ## 输入
 
-- `/tmp/dvp_raw_materials.json`（阶段 1 的输出）
+- `/tmp/dvp_raw_materials.json`（阶段 1 的输出，含阶段 2 探索结果）
 - 用户可能提供的 DVP 模板文件
 - [section-catalog](../section-catalog.md)（内置参考）
 
@@ -61,7 +61,7 @@ DVP 章节结构（共 8 个章节）：
 
 ## 输出
 
-写入 `/tmp/dvp_template.json`。完整示例参见 [example-output](../example-output.md) 阶段 2 产物。
+写入 `/tmp/dvp_template.json`。完整示例参见 [example-output](../example-output.md) 阶段 3 产物。
 
 ## 完成条件
 
@@ -69,4 +69,4 @@ DVP 章节结构（共 8 个章节）：
 
 ## 回退
 
-用户补充新信息时，回到阶段 1。在阶段 1 中更新原料数据后重新进入本阶段。
+用户补充新信息时，回到阶段 1。更新资料后重新进入阶段 2 再到本阶段。
