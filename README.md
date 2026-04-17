@@ -33,7 +33,7 @@ Or copy to your project's `.claude-plugin/` directory.
 In Claude Code, trigger the skill with:
 
 ```
-/dvp
+/dvp-composer
 ```
 
 Or simply describe your need:
@@ -56,7 +56,7 @@ Then follow the interactive prompts through each phase.
 
 ## Components
 
-- **Skills**: 1 main skill (`dvp`) with 6 phase reference files
+- **Skills**: 1 main skill (`dvp-composer`) with 6 phase reference files
 - **Agents**: 1 reviewer agent (`dvp-reviewer`) for quality validation
 - **Scripts**: `generate_xlsx.py` for Excel generation
 
