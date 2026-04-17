@@ -1,51 +1,64 @@
 # DVP Composer
 
-Claude Code Plugin — 交互式 DVP（Data Verification Plan，数据验证计划）生成器，面向 CRO 公司的 Data Manager。
+Data Validation Plan (DVP) composition assistant for clinical trial Data Management.
 
-## 功能
+## Overview
 
-- 读取 Protocol / CRF / DMP 参考文档，自动提取关键信息
-- 六阶段工作流，每阶段独立、自治、可回退
-- 质量检查（R1-R9），包含内部逻辑检查和外部正确性验证
-- 输出格式化 Excel (.xlsx) 文件
+DVP Composer is a Claude Code plugin that guides users through a structured 6-phase workflow to create a complete Data Validation Plan for clinical trials in CRO/DM context.
 
-## 安装
+## Features
 
-将本仓库克隆到 Claude Code 插件目录：
+- **6-Phase Interactive Workflow**: Collection → Strategy → Design → Alignment → Draft → Review
+- **Multiple Input Methods**: Paste text, read files (PDF/Word/MD), or Q&A style
+- **Excel Output**: Generates formatted .xlsx with Check List, Summary, Revision History, and External Data Reconciliation sheets
+- **Template Support**: Use your own DVP Excel template or the default format
+- **Quality Review**: Built-in reviewer agent for completeness, consistency, and quality checks
+
+## Prerequisites
+
+- Python 3.8+
+- openpyxl: `pip install openpyxl`
+
+## Installation
 
 ```bash
-git clone <repo-url> ~/.claude/plugins/dvp-composer
+# Install as Claude Code plugin
+claude /plugin install /path/to/dvp-composer
 ```
 
-## 依赖
+Or copy to your project's `.claude-plugin/` directory.
 
-- Python 3
-- [openpyxl](https://openpyxl.readthedocs.io/)（首次运行时自动安装）
+## Usage
 
-## 使用
-
-在 Claude Code 中输入：
+In Claude Code, trigger the skill with:
 
 ```
-/dvp-composer path/to/protocol.pdf
+/dvp
 ```
 
-或直接描述需求：
+Or simply describe your need:
+- "compose DVP"
+- "create a Data Validation Plan"
+- "I need to write a DVP for my study"
 
-```
-帮我编写 ABC-123 研究的 DVP
-```
+Then follow the interactive prompts through each phase.
 
-## 六阶段工作流
+## Workflow Phases
 
-| 阶段 | 职责 | 产出 |
-|------|------|------|
-| 1. 原料收集 | 收集文档和信息，澄清歧义 | 结构化原料数据 |
-| 2. 模板确认 | 确认章节结构、列定义和格式 | DVP 模板 |
-| 3. 规则生成 | 为各章节定义生成规则/逻辑 | 生成规则集 |
-| 4. 全量生成 | 批量生成所有章节的完整数据 | 完整 DVP 数据 |
-| 5. 质量检查 | 验证数据的正确性和完整性（R1-R9） | 检查报告 |
-| 6. 生成 Excel | 输出格式化 Excel 文件 | .xlsx 文件 |
+| Phase | Name | Description |
+|-------|------|-------------|
+| 1 | Collection | Gather protocol, CRF, SAP and other input materials |
+| 2 | Scope & Strategy | Define validation scope, key variables, and risk points |
+| 3 | Design Checks | Design specific check rules per data module |
+| 4 | Alignment | Confirm rules are correct and feasible |
+| 5 | Draft | Compile into structured DVP document and generate Excel |
+| 6 | Internal Review | Review for completeness, consistency, and quality |
+
+## Components
+
+- **Skills**: 1 main skill (`dvp`) with 6 phase reference files
+- **Agents**: 1 reviewer agent (`dvp-reviewer`) for quality validation
+- **Scripts**: `generate_xlsx.py` for Excel generation
 
 ## License
 
