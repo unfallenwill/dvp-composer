@@ -15,6 +15,19 @@ Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses
 | JSON construction | Self-decide | Follow defined schema |
 | Format details | Self-decide | Follow specification |
 
+## Sub-Tasks
+
+At the start of this phase, create the following sub-tasks. Each should `addBlockedBy` the Phase 5 task ID. Mark each `completed` when its step finishes.
+
+| # | subject | description |
+|---|---------|-------------|
+| 1 | Compile Document Sections | Assemble all DVP sections from previous phases |
+| 2 | Format Check List | Organize check rules into the target sheet structure |
+| 3 | Build JSON Input | Construct dvp_content.json with all compiled content |
+| 4 | Generate Excel | Execute generate_xlsx.py to produce the output file |
+| 5 | Review Output | Verify correctness of the generated Excel |
+| 6 | Present Draft | Present draft summary to user for confirmation |
+
 ## Steps
 
 ### Step 1: Compile Document Sections
@@ -153,6 +166,8 @@ Verify the output file is created successfully.
 ```
 
 Wait for user confirmation before proceeding to Phase 6.
+
+**Task update**: Mark Phase 5 task as `completed`. Mark Phase 6 task as `in_progress`.
 
 ## Tips
 

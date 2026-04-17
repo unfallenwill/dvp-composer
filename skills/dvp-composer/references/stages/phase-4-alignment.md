@@ -18,6 +18,19 @@ Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses
 | Numbering corrections | Self-decide | Fix automatically |
 | Wording refinements | Self-decide | Improve automatically |
 
+## Sub-Tasks
+
+At the start of this phase, create the following sub-tasks. Each should `addBlockedBy` the Phase 4 task ID. Mark each `completed` when its step finishes.
+
+| # | subject | description |
+|---|---------|-------------|
+| 1 | Protocol Alignment Review | Verify check logic aligns with protocol requirements |
+| 2 | SAP/Analysis Alignment | Verify checks support analysis needs |
+| 3 | Edit Check Conflict Check | Identify and resolve overlaps with existing edit checks |
+| 4 | Database Feasibility | Assess whether checks can execute against the database |
+| 5 | Query Burden Assessment | Evaluate and optimize query volume |
+| 6 | Present Alignment Results | Output alignment report and confirm completion |
+
 ## Steps
 
 ### Step 1: Protocol Alignment Review
@@ -104,6 +117,8 @@ Batch all conflict items into one prompt.
 ```
 
 Wait for user confirmation before proceeding to Phase 5.
+
+**Task update**: Mark Phase 4 task as `completed`. Mark Phase 5 task as `in_progress`.
 
 ## Tips
 

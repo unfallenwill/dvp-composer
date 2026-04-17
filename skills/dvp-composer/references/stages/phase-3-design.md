@@ -34,6 +34,19 @@ Each check rule should define:
 | Severity/Priority | Critical, Major, Minor |
 | Execution Method | System, SAS, Listing, Manual, Reconciliation |
 
+## Sub-Tasks
+
+At the start of this phase, create the following sub-tasks. Each should `addBlockedBy` the Phase 3 task ID. Mark each `completed` when its step finishes.
+
+| # | subject | description |
+|---|---------|-------------|
+| 1 | Clarify Design Parameters | Resolve ambiguous protocol details and confirm query language |
+| 2 | Design by Module | Design checks per module covering all check types |
+| 3 | Module Coverage | Ensure all applicable modules are covered |
+| 4 | Assign Check IDs | Assign unique IDs following naming convention |
+| 5 | Write Query Wording | Write clear, actionable query text for each check |
+| 6 | Present Check Rules | Output complete check list organized by module |
+
 ## Steps
 
 ### Step 1: Clarify Design Parameters
@@ -132,6 +145,8 @@ Each check rule should define:
 ```
 
 Wait for user confirmation before proceeding to Phase 4.
+
+**Task update**: Mark Phase 3 task as `completed`. Mark Phase 4 task as `in_progress`.
 
 ## Tips
 

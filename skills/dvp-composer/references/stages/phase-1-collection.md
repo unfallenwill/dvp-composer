@@ -18,6 +18,18 @@ Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses
 | Visit structure, data modules | Self-decide | Derive from provided materials |
 | Missing details not in materials | Must-ask | Ask targeted questions for gaps |
 
+## Sub-Tasks
+
+At the start of this phase, create the following sub-tasks. Each should `addBlockedBy` the Phase 1 task ID. Mark each `completed` when its step finishes.
+
+| # | subject | description |
+|---|---------|-------------|
+| 1 | Request Input Materials | Ask user for Protocol, CRF, and other materials |
+| 2 | Confirm DVP Template | Determine output format (user template or default) |
+| 3 | Analyze Input Materials | Extract study design, key data, visit structure, data modules |
+| 4 | Identify Gaps | Ask targeted questions for missing information |
+| 5 | Present Summary | Output Phase 1 summary and confirm completion |
+
 ## Steps
 
 ### Step 1: Request Input Materials
@@ -111,6 +123,8 @@ Batch all gap questions together. Example:
 ```
 
 Wait for user confirmation before proceeding to Phase 2.
+
+**Task update**: Mark Phase 1 task as `completed`. Mark Phase 2 task as `in_progress`.
 
 ## Tips
 

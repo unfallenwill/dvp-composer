@@ -28,6 +28,46 @@ Guide the user through a structured 6-phase interactive workflow to compose a Da
 
 After completing each phase, present a summary to the user and ask for confirmation before proceeding to the next phase. If the user requests changes, iterate within the current phase before moving forward.
 
+## Task Tracking
+
+When the workflow starts, create a task list to give the user a clear roadmap and granular progress tracking.
+
+### Phase-Level Tasks
+
+At workflow startup, use `TaskCreate` to create 6 phase-level tasks in order. Each task must include `addBlockedBy` pointing to the previous phase's task ID (except Phase 1). Mark Phase 1 as `in_progress` immediately.
+
+| Phase | subject | description | activeForm |
+|-------|---------|-------------|------------|
+| 1 | Phase 1: Collection | Gather all input materials and understand study context | Collecting study materials |
+| 2 | Phase 2: Scope & Strategy | Define validation scope, key data, and risk points | Defining validation scope & strategy |
+| 3 | Phase 3: Design Checks | Design executable check rules per module | Designing check rules |
+| 4 | Phase 4: Alignment | Verify rules are correct, feasible, and conflict-free | Aligning check rules |
+| 5 | Phase 5: Draft | Compile DVP document and generate Excel output | Drafting DVP document |
+| 6 | Phase 6: Internal Review | Review for completeness, consistency, and clarity | Reviewing DVP internally |
+
+Example:
+```
+TaskCreate subject="Phase 1: Collection" description="Gather all input materials and understand study context" activeForm="Collecting study materials"
+→ returns task_id "1"
+
+TaskCreate subject="Phase 2: Scope & Strategy" description="Define validation scope, key data, and risk points" activeForm="Defining validation scope & strategy" addBlockedBy=["1"]
+
+...and so on for all 6 phases.
+
+TaskUpdate taskId="1" status="in_progress"
+```
+
+### Sub-Tasks
+
+When entering a phase, read its reference file and create sub-tasks for that phase's steps. Each sub-task should `addBlockedBy` the current phase's task ID. Mark each sub-task `completed` as its step finishes. When all sub-tasks are done, mark the phase-level task as `completed` and the next phase as `in_progress`.
+
+### Phase Transition
+
+At each `[Done]` confirmation:
+1. Mark the current phase task as `completed`
+2. Mark the next phase task as `in_progress`
+3. Load the next phase file and create its sub-tasks
+
 ## Input Methods
 
 Support three input methods simultaneously:

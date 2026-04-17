@@ -54,6 +54,18 @@ Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses
 - [ ] SAE/Death reporting requirements are covered
 - [ ] Inclusion/exclusion violations can be detected
 
+## Sub-Tasks
+
+At the start of this phase, create the following sub-tasks. Each should `addBlockedBy` the Phase 6 task ID. Mark each `completed` when its step finishes.
+
+| # | subject | description |
+|---|---------|-------------|
+| 1 | Automated Review | Run through all review dimensions systematically |
+| 2 | Present Findings | Present Must Fix, Should Fix, and Nice to Have items |
+| 3 | Address Issues | Apply approved changes and verify no regressions |
+| 4 | Final Verification | Re-verify IDs, counts, and regenerate Excel if needed |
+| 5 | Present Final DVP | Present finalized DVP with review completion summary |
+
 ## Steps
 
 ### Step 1: Automated Review
@@ -119,6 +131,8 @@ Nice to Have items are listed but not actioned by default.
 ```
 
 The DVP is now ready for distribution and team review.
+
+**Task update**: Mark Phase 6 task as `completed`. All tasks are now done.
 
 ## Tips
 

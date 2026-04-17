@@ -17,6 +17,19 @@ Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses
 | Risk prioritization | Recommend | Default based on data criticality |
 | Standard module strategy | Self-decide | Apply standard templates |
 
+## Sub-Tasks
+
+At the start of this phase, create the following sub-tasks. Each should `addBlockedBy` the Phase 2 task ID. Mark each `completed` when its step finishes.
+
+| # | subject | description |
+|---|---------|-------------|
+| 1 | Define Data Cleaning Scope | Classify modules as DVP check, Edit Check covered, or excluded |
+| 2 | Identify Key Data and Variables | List critical data and key variables from Phase 1 |
+| 3 | Assess Risk Points | Identify risk areas based on study complexity |
+| 4 | Define Validation Methods | Assign validation method per data category |
+| 5 | Define Module-Level Strategy | Outline per-module validation approach |
+| 6 | Present Strategy | Output Phase 2 strategy summary and confirm completion |
+
 ## Steps
 
 ### Step 1: Define Data Cleaning Scope
@@ -120,6 +133,8 @@ Present as a recommendation:
 ```
 
 Wait for user confirmation before proceeding to Phase 3.
+
+**Task update**: Mark Phase 2 task as `completed`. Mark Phase 3 task as `in_progress`.
 
 ## Tips
 
