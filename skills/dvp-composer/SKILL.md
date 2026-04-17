@@ -1,5 +1,5 @@
 ---
-name: DVP Composer
+name: dvp-composer
 description: >
   This skill should be used when the user asks to "compose DVP", "create a DVP",
   "Data Validation Plan", "data cleaning plan", "edit check spec",
