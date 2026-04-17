@@ -4,6 +4,17 @@
 
 Perform comprehensive internal review of the DVP to identify omissions, inconsistencies, and quality issues before finalization.
 
+## Interaction Guide
+
+Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses **[Conflict]**, **[Confirm]**, and **[Done]** question types.
+
+| Decision point | Level | Notes |
+|----------------|-------|-------|
+| Must-fix item changes | Must-ask | Must get approval before modifying |
+| Should-fix item adoption | Recommend | Suggest fix, user confirms |
+| Nice-to-have improvements | Self-decide | Default: no change unless user requests |
+| Numbering/ID fixes | Self-decide | Fix automatically |
+
 ## Review Dimensions
 
 ### 1. Completeness Check
@@ -47,49 +58,42 @@ Perform comprehensive internal review of the DVP to identify omissions, inconsis
 
 ### Step 1: Automated Review
 
-Run through the review checklist above systematically. For each dimension:
+**[Self-decide]** Run through the review checklist above systematically. For each dimension:
 - Flag specific issues with Check IDs
 - Categorize by severity (Must Fix, Should Fix, Nice to Have)
 - Provide specific recommendations
 
 ### Step 2: Present Findings
 
-Output a structured review report:
-
+**[Conflict]** For Must Fix items, present one by one for approval:
 ```
-Internal Review Report:
-
-Completeness:
-  - [Missing] AE module lacks SAE determination time window check
-  - [Missing] Lab module lacks abnormal value trending check
-
-Logical Consistency:
-  - [Duplicate] AE-008 and AE-012 share the same logic, recommend merging
-  - [Conflict] VS-005 and VS-009 contradict on visit window definition
-
-Expression Quality:
-  - [Vague] CM-003 Query wording "please verify" is too generic, recommend changing to "please verify if the medication start date is before the AE start date"
-
-Numbering Standards:
-  - [Gap] IE module: IE-003 jumps directly to IE-006
-
-Risk Coverage:
-  - [Suggestion] Consider increasing check density for primary endpoint data
-
-Summary: 3 must-fix items, 2 should-fix items, 1 optional improvement
+[Conflict] [Check ID] [issue — e.g., Duplicate logic]
+  Finding: [AE-008 and AE-012 share the same logic]
+  Suggested resolution: Merge into one check — [keep AE-008, remove AE-012]
+  Please confirm: adopt suggestion / other approach
 ```
+
+**[Confirm]** For Should Fix items, batch into one recommendation:
+```
+[Confirm] Should Fix items (recommended changes)
+  The following issues are recommended for fixing but do not affect core correctness:
+  1. [CM-003] Query wording is too generic, recommend changing to "[specific wording]"
+  2. [VS-005] Visit window definition conflicts with VS-009, recommend unifying to [...]
+  ...
+  Please confirm: adopt all / adopt selected (please specify) / skip for now
+```
+
+Nice to Have items are listed but not actioned by default.
 
 ### Step 3: Address Issues
 
-For each flagged issue:
-1. Present the specific change recommendation
-2. Get user approval
-3. Apply the change
-4. Verify the change doesn't introduce new issues
+**[Self-decide]** For each approved change:
+1. Apply the change
+2. Verify the change doesn't introduce new issues
 
 ### Step 4: Final Verification
 
-After all issues are resolved:
+**[Self-decide]** After all issues are resolved:
 1. Re-verify Check ID sequence
 2. Confirm total check count
 3. Ensure Excel output reflects all changes
@@ -97,11 +101,22 @@ After all issues are resolved:
 
 ### Step 5: Present Final DVP
 
-Present the finalized DVP:
+**[Done]** Present the finalized DVP:
 - Final check count summary
 - Review completion confirmation
 - Updated Excel file path
 - List of changes made during review
+
+```
+[Done] Phase 6: Internal Review
+  Output summary:
+  - Final check rule count: [N]
+  - Review results: [N] Must Fix corrected / [N] Should Fix adopted / [N] Nice to Have unchanged
+  - Output file: [file path]
+  - Review complete — DVP is ready for distribution and team review
+
+  Assumptions made: [if any]
+```
 
 The DVP is now ready for distribution and team review.
 

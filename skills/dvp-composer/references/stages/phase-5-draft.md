@@ -4,11 +4,22 @@
 
 Compile all validated content into a structured DVP document and generate the final Excel output.
 
+## Interaction Guide
+
+Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses **[Confirm]** and **[Done]** question types. This phase has the fewest questions.
+
+| Decision point | Level | Notes |
+|----------------|-------|-------|
+| Template column mapping (unresolvable) | Must-ask | Cannot guess field mappings |
+| Document section detail level | Recommend | Default to standard detail |
+| JSON construction | Self-decide | Follow defined schema |
+| Format details | Self-decide | Follow specification |
+
 ## Steps
 
 ### Step 1: Compile Document Sections
 
-Assemble the full DVP document with these sections (see `references/section-catalog.md` for details):
+**[Self-decide]** Assemble the full DVP document with these sections (see `references/section-catalog.md` for details):
 
 1. **Purpose** — Why this DVP exists, what it covers
 2. **Scope** — Studies, modules, data types in scope
@@ -21,13 +32,32 @@ Assemble the full DVP document with these sections (see `references/section-cata
 9. **Revision History** — Initial version entry
 10. **Appendix** — Check list index, reference documents, mapping tables
 
+**[Confirm]** If the detail level of document sections needs user input:
+```
+[Confirm] Document section detail level
+  Recommendation: Standard detail — each section includes full description
+  Rationale: Full detail is recommended for first draft; subsequent versions can be streamlined
+  Alternative: Brief version — only essential content
+  Please confirm whether to adopt the recommendation.
+```
+
 ### Step 2: Format Check List
 
-Organize all check rules into the Check List structure. If using a user-provided template, map to the template's columns. Otherwise, use the default column structure from `references/excel-spec.md`.
+**[Self-decide]** Organize all check rules into the Check List structure. If using a user-provided template, map to the template's columns. Otherwise, use the default column structure from `references/excel-spec.md`.
+
+**[Must-ask]** If template column names cannot be automatically matched:
+```
+[Collect] Template column mapping confirmation
+  Background: The following column names in the template could not be auto-mapped to standard fields
+  Please confirm the mapping:
+  1. Template column "[Column A]" → Check description / Check logic / Other?
+  2. Template column "[Column B]" → Severity / Priority / Other?
+  ...
+```
 
 ### Step 3: Build JSON Input
 
-Construct `dvp_content.json` with all compiled content:
+**[Self-decide]** Construct `dvp_content.json` with all compiled content:
 
 ```json
 {
@@ -83,7 +113,7 @@ Construct `dvp_content.json` with all compiled content:
 
 ### Step 4: Generate Excel
 
-Execute the generation script:
+**[Self-decide]** Execute the generation script:
 
 ```bash
 python3 scripts/generate_xlsx.py \
@@ -96,7 +126,7 @@ Verify the output file is created successfully.
 
 ### Step 5: Review Output
 
-After generating the Excel:
+**[Self-decide]** After generating the Excel:
 1. Read back key sections to verify correctness
 2. Check that all modules are represented
 3. Verify Check IDs are sequential and no gaps
@@ -104,13 +134,23 @@ After generating the Excel:
 
 ### Step 6: Present Draft
 
-Present the draft to the user:
+**[Done]** Present the draft to the user:
 - Summary of document structure
 - Total check count per module
 - File path to the generated Excel
 - Any remaining caveats or assumptions
 
-Ask the user: "The DVP draft has been generated. Please review the file, and I will proceed to the final phase: Internal Review."
+```
+[Done] Phase 5: Draft
+  Output summary:
+  - Document structure: [N] sections
+  - Check rules: [N] total (per module: AE [N], Visit [N], ...)
+  - Output file: [file path]
+  - Assumptions made: [if any]
+
+  Next: Phase 6: Internal Review
+  Will proceed after your confirmation. Let me know if adjustments are needed.
+```
 
 Wait for user confirmation before proceeding to Phase 6.
 

@@ -78,6 +78,78 @@ python3 scripts/generate_xlsx.py --input dvp_content.json --output DVP.xlsx [--t
 
 If the user provides a template, pass the `--template` flag to match the template's format.
 
+## Interaction Protocol
+
+All phases must follow this unified interaction protocol for when and how to ask the user questions.
+
+### Decision Framework — When to Ask
+
+At each decision point, determine the appropriate level:
+
+| Level | Condition | Action |
+|-------|-----------|--------|
+| **Self-decide** | Answer is derivable from provided materials; follows industry convention; low-impact and correctable | Decide independently, record assumption |
+| **Recommend** | Reasonable default exists but multiple valid options are available | Present recommendation with rationale, user must explicitly confirm |
+| **Must-ask** | Required information is missing; multiple options with irreversible impact; project-specific preference required | Ask structured question, wait for answer |
+
+### Question Format — How to Ask
+
+Use one of four question types, each with a text label:
+
+**[Collect] Information gathering** — used when required input is missing:
+```
+[Collect] [topic] needs [specific information]
+  Background: [why this information is needed]
+  Please provide: [what exactly is needed]
+```
+
+**[Confirm] Recommendation** — used when presenting a default for confirmation:
+```
+[Confirm] [decision point]
+  Recommendation: [option]
+  Rationale: [why this option is recommended]
+  Alternative: [other option(s)]
+  Please confirm whether to adopt the recommendation, or choose an alternative.
+```
+
+**[Conflict] Conflict resolution** — used when checks conflict or overlap:
+```
+[Conflict] [Check ID] [issue description]
+  Finding: [specific conflict content]
+  Suggested resolution: [keep/merge/remove] — [reason]
+  Please confirm: adopt suggestion / other approach
+```
+
+**[Done] Phase confirmation** — used at every phase transition:
+```
+[Done] Phase N: [phase name]
+  Output summary:
+  - [key output 1]
+  - [key output 2]
+  - Assumptions made: [if any]
+
+  Next: Phase N+1: [phase name]
+  Will proceed after your confirmation. Let me know if adjustments are needed.
+```
+
+### Batching Rules
+
+- Combine multiple questions from the same phase into **one batch** rather than asking one by one.
+- Order by priority: Must-ask first, Recommend-confirmation second.
+- No more than 5 questions per batch.
+- Recommendation-type questions must include rationale; user must explicitly confirm.
+
+### Per-Phase Question Guide
+
+| Phase | Must-ask | Recommend | Self-decide |
+|-------|----------|-----------|-------------|
+| 1. Collection | Protocol/CRF availability, template availability, material format | Default 4-sheet format (if no template) | Study design extraction, visit structure, data modules from materials |
+| 2. Scope & Strategy | Scope boundaries, Edit Check coverage, key data confirmation | Validation method assignment, risk prioritization | Standard module strategy selection |
+| 3. Design Checks | Ambiguous thresholds/boundaries, query language preference (CN/EN) | Check coverage density, severity grading | Check ID naming, standard check logic |
+| 4. Alignment | Conflict resolution, feasibility trade-offs | Query burden assessment, low-priority rule consolidation | Numbering corrections, wording refinements |
+| 5. Draft | Unresolvable template column mapping | Document section detail level | JSON construction, format details |
+| 6. Review | Must-fix item changes | Should-fix item adoption | Nice-to-have items (default: no change) |
+
 ## Key Principles
 
 1. **Interactive pacing**: Never rush through phases. Confirm understanding at each transition.

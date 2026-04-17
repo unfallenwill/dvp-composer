@@ -4,11 +4,25 @@
 
 Gather all input materials needed to compose the DVP. Understand the study context, key data, and validation requirements.
 
+## Interaction Guide
+
+Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses **[Collect]** and **[Done]** question types.
+
+| Decision point | Level | Notes |
+|----------------|-------|-------|
+| Whether user has Protocol/CRF | Must-ask | Required materials — cannot proceed without |
+| Material format (paste/file/Q&A) | Must-ask | Determines how to ingest information |
+| Whether user has a DVP template | Must-ask | Determines output format |
+| Default 4-sheet format (no template) | Recommend | Present default, user confirms |
+| Study design extraction from materials | Self-decide | Derive from provided materials |
+| Visit structure, data modules | Self-decide | Derive from provided materials |
+| Missing details not in materials | Must-ask | Ask targeted questions for gaps |
+
 ## Steps
 
 ### Step 1: Request Input Materials
 
-Ask the user to provide the following materials (any format: paste text, file path, or verbal description):
+**[Collect]** Ask the user to provide the following materials (any format: paste text, file path, or verbal description):
 
 | Material | Priority | Purpose |
 |----------|----------|---------|
@@ -21,19 +35,39 @@ Ask the user to provide the following materials (any format: paste text, file pa
 | Project Timeline | Optional | Align validation milestones |
 | DVP Template | Optional | Use user's preferred output format |
 
+Batch all collection questions into one prompt. Example:
+
+```
+[Collect] Materials needed for DVP composition
+  Background: The following materials are needed to compose the DVP
+  Please provide (paste text, file paths, or verbal descriptions):
+  1. [Required] Protocol — study protocol document
+  2. [Required] CRF/eCRF — case report form
+  3. [Optional] SAP / Edit Check Spec / DB Build Docs / External data specs
+  4. [Optional] DVP Excel template — output will follow your template format
+  Please provide whatever materials you have available — all are not required upfront.
+```
+
 ### Step 2: Confirm DVP Template
 
-Ask specifically whether the user has a DVP Excel template. If yes, read the template to understand:
+**[Confirm]** Ask specifically whether the user has a DVP Excel template. If yes, read the template to understand:
 - Sheet names and structure
 - Column headers in Check List
 - Required fields vs optional fields
 - Formatting conventions
 
-If no template is provided, note that the default 4-sheet format will be used (see `references/excel-spec.md`).
+If no template is provided:
+```
+[Confirm] Output format
+  Recommendation: Use the default 4-sheet format (Check List / Summary / Revision History / Ext Data Recon)
+  Rationale: This is the industry-standard structure when no template is provided
+  Alternative: Use a custom structure you define
+  Please confirm whether to adopt the recommendation.
+```
 
 ### Step 3: Analyze Input Materials
 
-After receiving materials, analyze and summarize:
+**[Self-decide]** After receiving materials, analyze and summarize:
 1. **Study design**: Phase, indication, sponsor, study type
 2. **Key data points**: Primary/secondary endpoints, critical variables
 3. **Visit structure**: Schedule of assessments, visit windows
@@ -42,18 +76,39 @@ After receiving materials, analyze and summarize:
 
 ### Step 4: Identify Gaps
 
-List any critical information missing from the provided materials. Ask targeted questions to fill gaps. Do not fabricate study details.
+**[Collect]** List any critical information missing from the provided materials. Ask targeted questions to fill gaps. Do not fabricate study details.
+
+Batch all gap questions together. Example:
+```
+[Collect] Items to clarify from the protocol
+  Background: The following information was not found in the provided materials but is needed for DVP composition
+  Please provide:
+  1. [Visit windows] What is the allowed window (in days) for each visit?
+  2. [SAE reporting] What is the SAE reporting timeline (in hours)?
+  3. ...
+```
 
 ### Step 5: Present Summary
 
-Output a structured summary including:
+**[Done]** Output a structured summary including:
 - Study overview (protocol number, indication, phase, design)
 - Available materials list
 - Key data and modules identified
 - Template decision (user template or default)
 - Outstanding questions (if any)
 
-Ask the user: "Here is the summary of the study materials. Please confirm if this is accurate, and I will proceed to the next phase: Scope & Strategy."
+```
+[Done] Phase 1: Collection
+  Output summary:
+  - Study overview: [Protocol / Phase / Indication / Design]
+  - Available materials: [list]
+  - Key data and modules identified: [list]
+  - Template decision: [user template / default 4-sheet]
+  - Assumptions made: [if any]
+
+  Next: Phase 2: Scope & Strategy
+  Will proceed after your confirmation. Let me know if adjustments are needed.
+```
 
 Wait for user confirmation before proceeding to Phase 2.
 
