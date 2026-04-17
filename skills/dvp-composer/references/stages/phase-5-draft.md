@@ -57,7 +57,7 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 
 **[Self-decide]** Assemble the full DVP document using content from the deliverable files read at the start of this phase. The check list comes from `checks-final.md`. Study metadata comes from `study-overview.md`. Scope and strategy come from `scope.md`, `key-data.md`, `risk-assessment.md`, `validation-methods.md`.
 
-1. **Purpose** — Why this DVP exists, what it covers
+1. **Purpose** — MUST write a 2-3 sentence paragraph stating: (a) the protocol number and study this DVP covers, (b) the validation scope (modules included), and (c) the intended audience (DM team, CRO, sponsor). Draw protocol number from `study-overview.md` and modules from `scope.md`.
 2. **Scope** — Studies, modules, data types in scope
 3. **Roles & Responsibilities** — Who does what in data validation
 4. **Data Review Strategy** — Overall approach to data review (from Phase 2)
@@ -94,6 +94,28 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 ### Step 3: Build JSON Input
 
 **[Self-decide]** Construct `dvp_content.json` by converting content from the deliverable files into the JSON structure below. Read `checks-final.md` for the check list. Read `study-overview.md` for summary metadata. Read `scope.md`, `key-data.md`, `risk-assessment.md`, `validation-methods.md` for scope and strategy fields.
+
+**JSON field constraints (all apply to the schema below):**
+
+`summary` object:
+- Required fields: `protocol_number`, `study_phase`, `indication`, `version`, `scope`. MUST NOT be empty strings.
+- Optional fields: `sponsor`, `author`, `key_data`, `risk_summary`, `validation_strategy`. If unknown, use `"N/A"`.
+- `roles` array: MUST contain at least 2 entries (Lead DM + DM minimum).
+
+`checks` array:
+- Every object MUST contain all 12 keys shown below (`check_id`, `module`, `category`, `description`, `logic`, `scope`, `trigger`, `query_wording`, `severity`, `method`, `status`, `notes`). No keys may be omitted.
+- `severity` MUST be one of: `Critical`, `Major`, `Minor`.
+- `method` MUST be one of: `System`, `SAS`, `Listing`, `Manual`, `Reconciliation`.
+- `status` MUST be `Active` for all checks in the initial draft.
+- `check_id` MUST be unique across the entire array.
+- Array MUST contain at least 1 check for every module classified as `DVP Check` in `scope.md`.
+
+`revisions` array:
+- MUST contain at least 1 entry for the initial draft.
+
+`reconciliation` array:
+- Required only if external data sources were identified in Phase 1. If none, use an empty array `[]`.
+- Each entry MUST have: `recon_id`, `data_source`, `key_fields`, `method`.
 
 ```json
 {
@@ -153,12 +175,12 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 
 ```bash
 python3 scripts/generate_xlsx.py \
-  --input dvp_content.json \
-  --output DVP_<ProtocolNumber>_v1.0.xlsx \
-  [--template user_template.xlsx]
+  --input dvp_workspace/dvp_content.json \
+  --output dvp_workspace/DVP_<ProtocolNumber>_v1.0.xlsx \
+  [--template dvp_workspace/template.xlsx]
 ```
 
-Verify the output file is created successfully.
+MUST verify the output file is created. If the command fails (non-zero exit code), MUST read the error output, correct `dvp_workspace/dvp_content.json`, and re-run. MUST NOT proceed to Step 5 until the file `dvp_workspace/DVP_<ProtocolNumber>_v1.0.xlsx` exists.
 
 ### Step 5: Review Output
 

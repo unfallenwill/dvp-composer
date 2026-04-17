@@ -45,20 +45,20 @@ Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses
 
 ## Check Rule Structure
 
-Each check rule should define:
+Each check rule MUST define all 10 fields. Every field is required — no field may be left empty:
 
-| Field | Description |
-|-------|-------------|
-| Check ID | Unique identifier (e.g., AE-001, VISIT-012) |
-| Module | Domain/module (AE, Lab, Visit, etc.) |
-| Category | Check category (consistency, completeness, range, etc.) |
-| Description | Clear description of what is being checked |
-| Logic Rule | Exact logical condition (e.g., "if AE start date < first dose date") |
-| Applicable Scope | Which subjects, visits, or conditions apply |
-| Trigger Condition | When this check fires (data entry, batch, scheduled) |
-| Query Wording | Exact query text shown to site |
-| Severity/Priority | Critical, Major, Minor |
-| Execution Method | System, SAS, Listing, Manual, Reconciliation |
+| Field | Description | Allowed Values / Format |
+|-------|-------------|------------------------|
+| Check ID | Unique identifier | Format: `{MODULE_PREFIX}-{NNN}` where prefix is one of: AE, LB, VS, DM, IE, CM, EX, PE, SC, MH, DS. Numbering is zero-padded 3-digit sequential (e.g., AE-001, AE-002). |
+| Module | Domain/module | MUST match a module name from `data-modules.md`. |
+| Category | Check category | One of: `Completeness` / `Consistency` / `Range` / `Cross-Module` / `Timeline`. |
+| Description | Clear description of what is being checked | One sentence, prefixed with the check type (e.g., "Completeness: AE start date is missing"). |
+| Logic Rule | Exact logical condition | MUST be a boolean expression using field names and operators (e.g., `IF AE.aestdat IS NULL AND AE.aeterm IS NOT NULL`). |
+| Applicable Scope | Which subjects, visits, or conditions apply | MUST specify population (e.g., "All subjects with at least one AE record"). |
+| Trigger Condition | When this check fires | One of: `Data Entry` / `Batch (SAS)` / `Scheduled` / `Listing Review` / `Reconciliation`. |
+| Query Wording | Exact query text shown to site | MUST be a complete, actionable sentence. MUST NOT be a generic phrase like "Please check" or "Please verify." |
+| Severity/Priority | Severity level | One of: `Critical` / `Major` / `Minor`. Critical = patient safety or regulatory impact. Major = data integrity impact. Minor = formatting or minor inconsistency. |
+| Execution Method | How the check is executed | One of: `System` / `SAS` / `Listing` / `Manual` / `Reconciliation`. |
 
 ## Sub-Tasks
 
@@ -140,11 +140,17 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 
 ### Step 5: Write Query Wording
 
-**[Self-decide]** For each check, write the query text that would appear in the EDC system:
-- Be specific: "Start date of AE is before the date of first study drug administration. Please verify."
-- Avoid vague queries: "Please check date" (too vague)
-- Include the expected corrective action when possible
-- Use the language preference confirmed in Step 1
+**[Self-decide]** For each check, write the query text that would appear in the EDC system. Every query MUST follow this template:
+
+`[Specific finding]. Please [expected corrective action].`
+
+Examples:
+- Correct: "Start date of AE is before the date of first study drug administration (AE start: {date}, first dose: {date}). Please verify and correct if necessary."
+- Correct: "Adverse event term is reported but start date is missing. Please provide the AE start date."
+- Incorrect (too vague): "Please check date."
+- Incorrect (no action): "Date discrepancy."
+
+MUST NOT use generic phrasing such as "Please check," "Please verify," or "Data discrepancy" without specifying what was found. MUST use the language preference confirmed in Step 1.
 
 ### Step 6: Present Check Rules
 

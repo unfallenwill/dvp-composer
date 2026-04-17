@@ -20,13 +20,13 @@ These contain all Phase 1 outputs. Use them as the factual basis for scope and s
 
 Before the [Done] step, write the following files to `dvp_workspace/`:
 
-| File | Content |
-|------|---------|
-| `scope.md` | Per-module classification (DVP check / Edit Check covered / Excluded) with exclusion reasons |
-| `key-data.md` | Critical data list: primary endpoints, safety data, submission key fields |
-| `risk-assessment.md` | High/medium/low risk areas with rationale for each rating |
-| `validation-methods.md` | Per-module validation method matrix (method + rationale) |
-| `module-strategy.md` | Per-module validation strategy key points |
+| File | Content | Required Format |
+|------|---------|-----------------|
+| `scope.md` | Per-module classification with exclusion reasons | Table with columns: Module, Classification, Reason. Classification allowed values: `DVP Check` / `Edit Check Covered` / `Excluded`. Every module in `data-modules.md` MUST appear in this table. |
+| `key-data.md` | Critical data list | Table with columns: Category, Variable, Source (Protocol/CRF/SAP), Priority. Category allowed values: `Primary Endpoint` / `Secondary Endpoint` / `Safety-Critical` / `Regulatory Key Field` / `Operational`. |
+| `risk-assessment.md` | Risk areas with ratings | Table with columns: Area, Risk Level, Rationale, Affected Modules. Risk Level allowed values: `High` / `Medium` / `Low`. Every High-rated area MUST map to at least one module. |
+| `validation-methods.md` | Per-module method matrix | Table with columns: Module, Method, Rationale. Method allowed values: `System Edit Check` / `SAS Program` / `Listing Review` / `Direct Query` / `Reconciliation`. Every module classified as `DVP Check` in `scope.md` MUST appear in this table. |
+| `module-strategy.md` | Per-module strategy | Table with columns: Module, Check Types, Key Fields, Method, Notes. Check Types MUST use the standard labels: `Completeness` / `Consistency` / `Range` / `Cross-Module` / `Timeline` / `Reconciliation`. |
 
 If new assumptions or gaps are identified during this phase, append them to `assumptions-and-gaps.md`.
 
@@ -125,16 +125,16 @@ Present as a recommendation:
 
 ### Step 5: Define Module-Level Strategy
 
-**[Self-decide]** For each key module, outline the validation approach:
+**[Self-decide]** For each key module in scope, MUST write a strategy entry in `module-strategy.md` specifying: (1) the check types to apply, (2) the key fields to validate, and (3) the validation method. Use these required check-type assignments per module:
 
-- **AE/SAE**: Consistency checks, completeness, SAE timeline, causality assessment
-- **ConMed**: Overlap with AE, IP interaction checks
-- **Exposure/IP**: Dosing compliance, accountability, treatment emergent
-- **Visit**: Visit windows, visit compliance, out-of-range visits
-- **Lab**: Normal range checks, trending, external reconciliation
-- **Inclusion/Exclusion**: Criteria compliance, violation identification
-- **Demography**: Consistency, completeness, age calculations
-- **Efficacy**: Endpoint-specific validation per SAP
+- **AE/SAE**: MUST include Completeness (required fields), Consistency (date logic), Timeline (SAE reporting window), Cross-Module (AE-to-visit linkage). Key fields: AE term, start/end dates, severity, seriousness, causality.
+- **ConMed**: MUST include Cross-Module (overlap with AE dates), Consistency (indication vs AE term match). Key fields: medication name, start/end dates, indication, route, dose.
+- **Exposure/IP**: MUST include Consistency (dose vs protocol), Timeline (treatment duration). Key fields: dose amount, start/end dates, treatment compliance.
+- **Visit**: MUST include Timeline (visit windows), Completeness (expected visits present). Key fields: visit date, visit name, visit status.
+- **Lab**: MUST include Range (normal range flags), Reconciliation (external data match), Consistency (unit consistency). Key fields: test name, result, unit, collection date.
+- **Inclusion/Exclusion**: MUST include Consistency (criteria vs enrollment data). Key fields: each I/E criterion response, screening date.
+- **Demography**: MUST include Consistency (age calculation), Completeness (required fields). Key fields: DOB, sex, informed consent date.
+- **Efficacy**: MUST include Consistency (endpoint assessment vs SAP definition). Key fields: per SAP endpoint variables.
 
 ### Step 6: Present Strategy
 
@@ -172,9 +172,9 @@ Wait for user confirmation before proceeding to Phase 3.
 
 **Task update**: Mark Phase 2 task as `completed`. Mark Phase 3 task as `in_progress`.
 
-## Tips
+## Rules
 
-- Prioritize risk-based approach: focus more checks on higher-risk data.
-- Consider query burden — avoid creating checks that generate excessive noise.
-- Align validation strategy with SAP analysis needs where available.
-- Document decisions on what NOT to include in DVP and why.
+- Modules rated `High` risk in `risk-assessment.md` MUST have more checks than modules rated `Low` risk. The check count ratio MUST be at least 2:1 between High and Low risk modules.
+- MUST NOT design checks that would trigger for more than 30% of records under normal conditions unless explicitly approved by the user. If a check is expected to trigger frequently, MUST flag it at the [Done] step as a potential query-burden concern.
+- If SAP is available, MUST verify that every primary endpoint variable in the SAP has at least one corresponding check in the DVP.
+- MUST document every module excluded from the DVP scope in `scope.md` with a Reason column entry. MUST NOT silently omit modules.
