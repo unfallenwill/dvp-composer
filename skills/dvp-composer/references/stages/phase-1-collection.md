@@ -42,6 +42,10 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 | 4 | Identify Gaps | Ask targeted questions for missing information |
 | 5 | Present Summary | Output Phase 1 summary and confirm completion |
 
+#### Decomposition
+
+- **Sub-task 3: Analyze Input Materials** — Decompose by material type when 3+ materials are provided (e.g., `Analyze Input Materials: Protocol`, `Analyze Input Materials: CRF`).
+
 ## Steps
 
 ### Step 1: Request Input Materials

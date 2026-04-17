@@ -51,6 +51,10 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 | 5 | Review Output | Verify correctness of the generated Excel |
 | 6 | Present Draft | Present draft summary to user for confirmation |
 
+#### Decomposition
+
+- **Sub-task 3: Build JSON Input** — Decompose by section (summary, checks, revisions, reconciliation) when check count exceeds 30 (e.g., `Build JSON Input: checks section`).
+
 ## Steps
 
 ### Step 1: Compile Document Sections

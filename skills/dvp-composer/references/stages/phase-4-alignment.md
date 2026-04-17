@@ -58,6 +58,11 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 | 5 | Query Burden Assessment | Evaluate and optimize query volume |
 | 6 | Present Alignment Results | Output alignment report and confirm completion |
 
+#### Decomposition
+
+- **Sub-task 1: Protocol Alignment Review** — Decompose by module when total check count exceeds 15 (e.g., `Protocol Alignment Review: AE/SAE`).
+- **Sub-task 4: Database Feasibility** — Decompose by module when total check count exceeds 15 (e.g., `Database Feasibility: Lab`).
+
 ## Steps
 
 ### Step 1: Protocol Alignment Review

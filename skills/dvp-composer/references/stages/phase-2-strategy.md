@@ -56,6 +56,11 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 | 5 | Define Module-Level Strategy | Outline per-module validation approach |
 | 6 | Present Strategy | Output Phase 2 strategy summary and confirm completion |
 
+#### Decomposition
+
+- **Sub-task 1: Define Data Cleaning Scope** — Decompose by data module when classifying scope (e.g., `Define Data Cleaning Scope: AE/SAE`).
+- **Sub-task 5: Define Module-Level Strategy** — Decompose by in-scope module (e.g., `Define Module-Level Strategy: AE/SAE`).
+
 ## Steps
 
 ### Step 1: Define Data Cleaning Scope
