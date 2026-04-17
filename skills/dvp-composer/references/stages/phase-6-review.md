@@ -102,6 +102,11 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 | 4 | Final Verification | Re-verify IDs, counts, and regenerate Excel if needed |
 | 5 | Present Final DVP | Present finalized DVP with review completion summary |
 
+#### Decomposition
+
+- **Sub-task 1: Automated Review** — Decompose by review dimension (Completeness, Logic Consistency, Expression Quality, Numbering Standards, Risk Coverage). Always decompose this sub-task — there are always exactly 5 dimensions.
+- **Sub-task 3: Address Issues** — Decompose by finding when 3+ findings exist (e.g., `Address Issues: AE-008 duplicate logic`).
+
 ## Steps
 
 ### Step 1: Automated Review

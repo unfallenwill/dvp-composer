@@ -73,6 +73,11 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 | 5 | Write Query Wording | Write clear, actionable query text for each check |
 | 6 | Present Check Rules | Output complete check list organized by module |
 
+#### Decomposition
+
+- **Sub-task 2: Design by Module** — Decompose by data module (e.g., `Design by Module: AE/SAE`, `Design by Module: Lab`).
+- **Sub-task 5: Write Query Wording** — Decompose by module when total check count exceeds 20 (e.g., `Write Query Wording: AE/SAE`).
+
 ## Steps
 
 ### Step 1: Clarify Design Parameters

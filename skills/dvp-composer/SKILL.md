@@ -6,7 +6,7 @@ description: >
   "validation check list", "write DVP", "draft DVP", or mentions creating,
   reviewing, or drafting a data validation plan or data cleaning strategy
   for clinical trials in CRO or sponsor data management contexts.
-version: 0.4.0
+version: 0.5.0
 ---
 
 # DVP Composer
@@ -60,6 +60,26 @@ TaskUpdate taskId=<Phase 1 task_id> status="in_progress"
 ### Sub-Tasks
 
 When entering a phase, read its reference file and create sub-tasks for that phase's steps. Each sub-task should `addBlockedBy` the current phase's task ID. Mark each sub-task `completed` as its step finishes. When all sub-tasks are done, mark the phase-level task as `completed` and the next phase as `in_progress`.
+
+### Dynamic Task Decomposition
+
+When a sub-task involves work across multiple distinct items whose count depends on runtime context, decompose it into leaf-level work items tracked with the task system.
+
+**When to decompose** — apply when a sub-task:
+- Involves iterating over a list whose length is determined at runtime (modules, dimensions, findings, materials)
+- Has distinct work items that can be completed independently
+- Risks losing progress or missing items without individual tracking
+
+**How to decompose**:
+1. Before starting the sub-task's actual work, identify the items (e.g., read `data-modules.md` to get the module list)
+2. Use `TaskCreate` to create one leaf task per item — each MUST `addBlockedBy` the parent sub-task's task ID
+3. Set the first leaf task to `in_progress`
+4. Complete each leaf task in order: mark `completed`, then set next `in_progress`
+5. When all leaf tasks are `completed`, mark the parent sub-task as `completed`
+
+**Naming**: Leaf task subjects use the pattern `[Sub-task subject]: [item]`, e.g. `Design by Module: AE/SAE`.
+
+**When NOT to decompose** — skip decomposition when the sub-task has 2 or fewer items, or the items are trivial (single-action each). Use judgment — decomposition should help tracking, not add overhead.
 
 ### Phase Transition
 
