@@ -1,5 +1,5 @@
 ---
-name: DVP Reviewer
+name: dvp-reviewer
 description: >
   DVP quality reviewer agent. Use when the user asks to "review DVP", "check DVP quality",
   "internal review DVP", or after a DVP draft is generated and the
