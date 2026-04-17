@@ -6,7 +6,7 @@ description: >
   "validation check list", "write DVP", "draft DVP", or mentions creating,
   reviewing, or drafting a data validation plan or data cleaning strategy
   for clinical trials in CRO or sponsor data management contexts.
-version: 0.3.0
+version: 0.4.0
 ---
 
 # DVP Composer
@@ -48,13 +48,13 @@ At workflow startup, use `TaskCreate` to create 6 phase-level tasks in order. Ea
 Example:
 ```
 TaskCreate subject="Phase 1: Collection" description="Gather all input materials and understand study context" activeForm="Collecting study materials"
-→ returns task_id "1"
+→ returns task_id (use the returned value, not a hardcoded number)
 
-TaskCreate subject="Phase 2: Scope & Strategy" description="Define validation scope, key data, and risk points" activeForm="Defining validation scope & strategy" addBlockedBy=["1"]
+TaskCreate subject="Phase 2: Scope & Strategy" description="Define validation scope, key data, and risk points" activeForm="Defining validation scope & strategy" addBlockedBy=[<Phase 1 task_id>]
 
 ...and so on for all 6 phases.
 
-TaskUpdate taskId="1" status="in_progress"
+TaskUpdate taskId=<Phase 1 task_id> status="in_progress"
 ```
 
 ### Sub-Tasks
@@ -100,15 +100,15 @@ All phase deliverables are written to `dvp_workspace/` under the user's working 
 3. At the start of each phase (except Phase 1), read the previous phase's deliverable files first
 4. File names are hard-coded in each phase instruction — do not rename them
 5. Overwrite existing files without asking for confirmation
-6. All files use Markdown format unless otherwise specified (.json, .xlsx)
+6. All files use Markdown format. The only exceptions are: `dvp_content.json` (JSON), `DVP_<ProtocolNumber>_v1.0.xlsx` (Excel), and any user-provided template files.
 
 ### Cross-Phase File: assumptions-and-gaps.md
 
-Phase 1 creates this file. Phases 2 and 3 may append new entries. Phase 4 resolves entries and marks them as Resolved. Always read the existing file before appending.
+Phase 1 creates this file with the initial table structure: `| # | Category | Description | Status | Phase |`. Phases 2 and 3 MUST append new rows (with Status = Open) when they encounter information gaps or make assumptions not confirmed by the user. Phase 4 MUST update the Status column from Open to Resolved for each item it resolves. Before appending, MUST read the existing file to avoid duplicate entries.
 
 ## Phase Instructions
 
-For detailed instructions on each phase, load the corresponding reference file:
+For detailed instructions on each phase, load the corresponding reference file from the skill's `references/stages/` directory (relative to the skill root at `skills/dvp-composer/`):
 
 - **Phase 1**: `references/stages/phase-1-collection.md`
 - **Phase 2**: `references/stages/phase-2-strategy.md`
@@ -130,10 +130,10 @@ Load each phase file at the start of that phase. Do not load all phases upfront.
 Use `scripts/generate_xlsx.py` to generate the final Excel file. The script accepts a JSON input containing all DVP content and produces the formatted .xlsx output.
 
 ```bash
-python3 scripts/generate_xlsx.py --input dvp_content.json --output DVP.xlsx [--template template.xlsx]
+python3 scripts/generate_xlsx.py --input dvp_workspace/dvp_content.json --output dvp_workspace/DVP_<ProtocolNumber>_v1.0.xlsx [--template dvp_workspace/template.xlsx]
 ```
 
-If the user provides a template, pass the `--template` flag to match the template's format.
+All file paths in the command MUST use the `dvp_workspace/` prefix. If the script exits with a non-zero code, read the error message, fix the JSON input, and re-run. MUST NOT proceed to the [Done] step until the script succeeds.
 
 ## Interaction Protocol
 
@@ -213,9 +213,9 @@ Use one of four question types, each with a text label:
 
 ## Key Principles
 
-1. **Interactive pacing**: Never rush through phases. Confirm understanding at each transition.
-2. **Domain accuracy**: Use correct clinical DM terminology (domain names, check types, query handling).
-3. **Practical focus**: Every check rule must be specific, executable, and testable.
-4. **Risk-based**: Prioritize checks around critical data and key risk points.
-5. **No hallucination**: Only generate checks based on information the user has provided or confirmed. If uncertain about protocol details, ask.
-6. **Language adaptation**: Adapt all prompts, queries, and confirmation messages to match the user's conversation language (Chinese or English).
+1. **Interactive pacing**: MUST present a [Done] summary at every phase transition and MUST wait for explicit user confirmation before loading the next phase file. MUST NOT proceed past a phase boundary without user approval.
+2. **Domain accuracy**: MUST use standard clinical DM domain abbreviations (AE, LB, VS, DM, IE, CM, EX, PE, SC, MH, DS). MUST use standard check-type labels (Completeness, Consistency, Range, Cross-Module, Timeline). MUST NOT invent non-standard terminology.
+3. **Practical focus**: Every check rule MUST include a Logic Rule that evaluates to a boolean (true/false) outcome. MUST NOT produce checks without a testable condition.
+4. **Risk-based**: Checks for modules rated High risk in `risk-assessment.md` MUST have at least 5 checks per module. Safety-critical modules (AE/SAE, Exposure/IP) MUST have at least one Critical-severity check.
+5. **No hallucination**: MUST NOT generate check rules for protocol details not present in the user-provided materials. If a check requires a protocol value that is missing, MUST ask the user via [Collect] before creating the check.
+6. **Language adaptation**: MUST write all query wording, [Done] summaries, and user-facing messages in the same language the user is using in conversation. If the user writes in Chinese, output MUST be in Chinese. If in English, output MUST be in English.

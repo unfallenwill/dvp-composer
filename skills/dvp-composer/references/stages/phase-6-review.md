@@ -41,42 +41,54 @@ Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses
 
 ## Review Dimensions
 
+For each dimension, perform the verification method specified. If any check item fails, record it as a finding with the severity level indicated.
+
 ### 1. Completeness Check
 
-- [ ] All modules identified in Phase 2 are covered in the check list
-- [ ] All key variables have associated checks
-- [ ] All risk points from Phase 2 are addressed
-- [ ] Cross-module consistency checks are included
-- [ ] External data reconciliation checks are included
+Verification method: Cross-reference `checks-final.md` against `scope.md`, `key-data.md`, and `risk-assessment.md`.
+
+- [ ] All modules classified as `DVP Check` in `scope.md` have at least one check in `checks-final.md`. **Fail condition: Module with no checks → Must Fix.**
+- [ ] All variables listed in `key-data.md` have at least one associated check. **Fail condition: Key variable with no check → Must Fix.**
+- [ ] All areas rated `High` in `risk-assessment.md` have at least 3 checks. **Fail condition: High-risk area with fewer than 3 checks → Should Fix.**
+- [ ] At least one Cross-Module category check exists per pair of related modules. **Fail condition: No cross-module check between related domains → Should Fix.**
+- [ ] If external data sources are listed in `scope.md`, at least one Reconciliation check exists per source. **Fail condition: External source with no reconciliation check → Should Fix.**
 
 ### 2. Logic Consistency
 
-- [ ] No duplicate check rules (same logic under different Check IDs)
-- [ ] No contradictory checks (two checks that cannot both pass)
-- [ ] No overlap with existing edit checks (unless intentional)
-- [ ] Date/time logic is consistent across modules
-- [ ] Severity grading logic is consistent
+Verification method: Compare every pair of checks within the same module for duplicate or contradictory logic.
+
+- [ ] No two checks have identical `logic` field values. **Fail condition: Duplicate logic found → Must Fix (merge or remove).**
+- [ ] No two checks produce contradictory requirements (one requires X, another requires not-X for the same condition). **Fail condition: Contradiction found → Must Fix.**
+- [ ] No DVP check duplicates logic already covered by edit checks in `edit-check-overlap.md` unless marked as intentional. **Fail condition: Unintentional overlap → Should Fix.**
+- [ ] Date comparison logic uses consistent reference dates across modules. **Fail condition: Inconsistent date baseline across modules → Should Fix.**
+- [ ] Checks with the same category and similar scope have consistent severity grading. **Fail condition: Similar checks with different severity and no documented rationale → Should Fix.**
 
 ### 3. Expression Quality
 
-- [ ] Check descriptions are clear and unambiguous
-- [ ] Logic rules are precise and testable
-- [ ] Query wording is site-friendly (clear, specific, actionable)
-- [ ] No undefined terms or abbreviations
+Verification method: Read each check's description, logic, and query wording.
+
+- [ ] Every Description follows the pattern `{Category}: {specific finding}`. **Fail condition: Description does not state the category or is vague → Should Fix.**
+- [ ] Every Logic Rule is a boolean expression using field names. **Fail condition: Logic is narrative text rather than a testable condition → Must Fix.**
+- [ ] Every Query Wording follows the template `[Specific finding]. Please [expected action].` **Fail condition: Query uses generic phrase without specifics → Should Fix.**
+- [ ] No undefined abbreviations in any field. **Fail condition: Undefined abbreviation → Nice to Have.**
 
 ### 4. Numbering Standards
 
-- [ ] Check IDs follow naming convention (MODULE-NNN)
-- [ ] No gaps in sequential numbering within modules
-- [ ] No duplicate IDs
-- [ ] Module prefixes are consistent
+Verification method: Extract all Check IDs, group by module prefix, and verify sequential ordering.
+
+- [ ] Every Check ID matches the format `{MODULE_PREFIX}-{NNN}`. **Fail condition: Non-standard format → Must Fix.**
+- [ ] Within each module prefix, NNN values are sequential with no gaps. **Fail condition: Gap in numbering → Must Fix.**
+- [ ] No two checks share the same Check ID. **Fail condition: Duplicate ID → Must Fix.**
+- [ ] All checks for the same module use the same prefix. **Fail condition: Mixed prefixes for one module → Must Fix.**
 
 ### 5. Risk Coverage
 
-- [ ] Safety-critical data has sufficient checks
-- [ ] Primary endpoint data has thorough validation
-- [ ] SAE/Death reporting requirements are covered
-- [ ] Inclusion/exclusion violations can be detected
+Verification method: Map checks to risk areas from `risk-assessment.md` and verify density.
+
+- [ ] Safety-critical data (AE/SAE, Death, Discontinuation) has at least one Critical-severity check. **Fail condition: Safety module with no Critical check → Must Fix.**
+- [ ] Primary endpoint data identified in `key-data.md` has at least 2 checks. **Fail condition: Primary endpoint with fewer than 2 checks → Must Fix.**
+- [ ] SAE/Death reporting timeline requirements have a corresponding Timeline check. **Fail condition: No SAE timeline check → Must Fix.**
+- [ ] Inclusion/exclusion violation detection has at least one Consistency check. **Fail condition: No I/E violation check → Should Fix.**
 
 ## Sub-Tasks
 
@@ -125,7 +137,7 @@ Nice to Have items are listed but not actioned by default.
 
 **[Self-decide]** For each approved change:
 1. Apply the change
-2. Verify the change doesn't introduce new issues
+2. Re-run the relevant Review Dimension checks for the affected module: verify no new duplicate IDs, no new logic contradictions, and no broken sequential numbering. If a new issue is introduced, revert the change and flag for [Must-ask].
 
 ### Step 4: Final Verification
 

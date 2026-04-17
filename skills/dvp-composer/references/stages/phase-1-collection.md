@@ -96,7 +96,7 @@ If no template is provided:
 2. **Key data points**: Primary/secondary endpoints, critical variables
 3. **Visit structure**: Schedule of assessments, visit windows
 4. **Data modules**: Which domains are in scope (AE, Lab, ConMed, etc.)
-5. **Existing checks**: What's already handled by the system
+5. **Existing checks**: What's already handled by the system. If the user did not provide an Edit Check Spec, MUST record "No Edit Check Spec provided — cannot assess existing system checks" in `assumptions-and-gaps.md` and MUST NOT assume any checks are already in place.
 
 ### Step 4: Identify Gaps
 
@@ -147,9 +147,9 @@ Wait for user confirmation before proceeding to Phase 2.
 
 **Task update**: Mark Phase 1 task as `completed`. Mark Phase 2 task as `in_progress`.
 
-## Tips
+## Rules
 
-- Not all materials are required to start. Begin with what's available and iterate.
-- If the user provides a Protocol, extract the study design, visit schedule, and endpoints first.
-- For CRF, focus on understanding the data collection structure rather than every single field.
-- Record any assumptions made and flag them for user confirmation.
+- MUST NOT require all materials before starting Phase 1. MUST begin with whatever the user provides and ask [Collect] questions for gaps.
+- When a Protocol is provided, MUST extract study design, visit schedule, and endpoints before proceeding to Step 4.
+- For CRF analysis, MUST extract the data collection structure (forms, fields, modules). MUST NOT attempt to document every individual CRF field.
+- MUST record every assumption in `assumptions-and-gaps.md` with Status = Open. MUST present all assumptions at the [Done] step for user confirmation.

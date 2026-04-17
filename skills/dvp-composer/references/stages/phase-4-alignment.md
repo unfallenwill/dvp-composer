@@ -62,11 +62,11 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 
 ### Step 1: Protocol Alignment Review
 
-**[Self-decide]** For each check rule, verify:
-- Logic aligns with protocol requirements
-- Triggers match protocol-specified events
-- Scope matches the study population and visit structure
-- No checks contradict protocol definitions
+**[Self-decide]** For each check rule, perform these verifications:
+- Logic verification: Extract the protocol requirement text that supports the check logic. If no supporting text exists, flag for [Must-ask].
+- Trigger verification: Confirm the Trigger Condition corresponds to a protocol-defined event (data entry, scheduled visit, external data receipt). If the trigger has no protocol basis, flag for [Must-ask].
+- Scope verification: Confirm the Applicable Scope population is a subset of the study population defined in `study-overview.md`. If the scope references visits or conditions not in `visit-schedule.md`, flag for [Must-ask].
+- Contradiction check: For each pair of checks in the same module, confirm both checks CAN simultaneously pass. If they cannot, flag as a conflict.
 
 **[Must-ask]** If any checks cannot be verified from the protocol, flag for confirmation:
 ```
@@ -155,9 +155,9 @@ Wait for user confirmation before proceeding to Phase 5.
 
 **Task update**: Mark Phase 4 task as `completed`. Mark Phase 5 task as `in_progress`.
 
-## Tips
+## Rules
 
-- This phase may require multiple rounds of discussion with the user.
-- For protocol alignment, reference specific protocol sections when flagging items.
-- Be practical: if a check is nice-to-have but causes excessive queries, recommend removing it.
-- Document all decisions and rationale for traceability.
+- If a [Must-ask] conflict cannot be resolved in one exchange, MUST continue the discussion until resolution. MUST NOT skip unresolved items.
+- When flagging a protocol alignment issue, MUST cite the specific protocol section number or page in the Finding description.
+- If a check is rated Minor severity AND its estimated trigger rate exceeds 30% of records, MUST recommend removal at the [Done] step with rationale.
+- MUST record every alignment decision (keep/merge/remove) and its rationale in `alignment-report.md`. MUST NOT make silent changes without a corresponding entry.
