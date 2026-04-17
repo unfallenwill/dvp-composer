@@ -6,7 +6,7 @@ description: >
   "validation check list", "write DVP", "draft DVP", or mentions creating,
   reviewing, or drafting a data validation plan or data cleaning strategy
   for clinical trials in CRO or sponsor data management contexts.
-version: 2.0.0
+version: 0.3.0
 ---
 
 # DVP Composer
@@ -89,6 +89,23 @@ Generate an Excel (.xlsx) file as the final DVP document.
 - **Revision History** — Version change log
 - **Ext Data Recon** — External data reconciliation checks
 
+## Workspace
+
+All phase deliverables are written to `dvp_workspace/` under the user's working directory.
+
+### Rules
+
+1. Create `dvp_workspace/` when the workflow starts
+2. At each phase's [Done] step, write all deliverable files to `dvp_workspace/`
+3. At the start of each phase (except Phase 1), read the previous phase's deliverable files first
+4. File names are hard-coded in each phase instruction — do not rename them
+5. Overwrite existing files without asking for confirmation
+6. All files use Markdown format unless otherwise specified (.json, .xlsx)
+
+### Cross-Phase File: assumptions-and-gaps.md
+
+Phase 1 creates this file. Phases 2 and 3 may append new entries. Phase 4 resolves entries and marks them as Resolved. Always read the existing file before appending.
+
 ## Phase Instructions
 
 For detailed instructions on each phase, load the corresponding reference file:
@@ -100,7 +117,7 @@ For detailed instructions on each phase, load the corresponding reference file:
 - **Phase 5**: `references/stages/phase-5-draft.md`
 - **Phase 6**: `references/stages/phase-6-review.md`
 
-Load each phase file at the start of that phase. Do not load all phases upfront.
+Load each phase file at the start of that phase. Do not load all phases upfront. After loading the phase file, read the previous phase's deliverable files from `dvp_workspace/` (except Phase 1, which has no predecessor). Each phase instruction lists exactly which files to read.
 
 ## Additional References
 
@@ -163,6 +180,10 @@ Use one of four question types, each with a text label:
 **[Done] Phase confirmation** — used at every phase transition:
 ```
 [Done] Phase N: [phase name]
+  Deliverables written to dvp_workspace/:
+  - [file1.md] — [one-line description]
+  - [file2.md] — [one-line description]
+
   Output summary:
   - [key output 1]
   - [key output 2]

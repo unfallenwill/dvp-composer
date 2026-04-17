@@ -4,6 +4,30 @@
 
 Perform comprehensive internal review of the DVP to identify omissions, inconsistencies, and quality issues before finalization.
 
+## Read Previous Phase
+
+Before starting Phase 6 work, read these files from `dvp_workspace/`:
+
+- `dvp_content.json` (Phase 5) — The DVP content to review
+- `checks-final.md` (Phase 4) — The authoritative check list (for cross-referencing)
+- `scope.md` (Phase 2) — Scope definition for completeness check
+- `key-data.md` (Phase 2) — Key data for coverage verification
+- `risk-assessment.md` (Phase 2) — Risk areas for coverage verification
+- `assumptions-and-gaps.md` — Assumptions for review
+
+## Deliverables
+
+Before the [Done] step, write the following files to `dvp_workspace/`:
+
+| File | Content |
+|------|---------|
+| `review-report.md` | Review findings organized by severity (Must Fix / Should Fix / Nice to Have), with handling results for each finding |
+
+If corrections were made during the review:
+- Update `dvp_content.json` with the corrected content
+- Re-run `scripts/generate_xlsx.py` to regenerate the Excel
+- Update `checks-final.md` if any checks were added, removed, or modified
+
 ## Interaction Guide
 
 Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses **[Conflict]**, **[Confirm]**, and **[Done]** question types.
@@ -108,10 +132,14 @@ Nice to Have items are listed but not actioned by default.
 **[Self-decide]** After all issues are resolved:
 1. Re-verify Check ID sequence
 2. Confirm total check count
-3. Ensure Excel output reflects all changes
-4. Regenerate Excel if needed
+3. If any corrections were made:
+   a. Update `dvp_content.json` in `dvp_workspace/`
+   b. Re-run `scripts/generate_xlsx.py` to regenerate the Excel
+   c. Update `checks-final.md` if checks changed
 
 ### Step 5: Present Final DVP
+
+Before presenting the summary, write the `review-report.md` deliverable to `dvp_workspace/`. If corrections were made, also update `dvp_content.json` and regenerate the Excel.
 
 **[Done]** Present the finalized DVP:
 - Final check count summary
@@ -121,13 +149,16 @@ Nice to Have items are listed but not actioned by default.
 
 ```
 [Done] Phase 6: Internal Review
+  Deliverables written to dvp_workspace/:
+  - review-report.md — Review findings and handling results
+  - dvp_content.json — [Updated / No changes]
+  - DVP_<ProtocolNumber>_v1.0.xlsx — [Regenerated / No changes]
+
   Output summary:
   - Final check rule count: [N]
   - Review results: [N] Must Fix corrected / [N] Should Fix adopted / [N] Nice to Have unchanged
-  - Output file: [file path]
+  - Output file: dvp_workspace/DVP_<ProtocolNumber>_v1.0.xlsx
   - Review complete — DVP is ready for distribution and team review
-
-  Assumptions made: [if any]
 ```
 
 The DVP is now ready for distribution and team review.

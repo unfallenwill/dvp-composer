@@ -1,6 +1,6 @@
 {
   "name": "dvp-composer",
-  "version": "2.0.0",
+  "version": "0.3.0",
   "description": "Data Validation Plan composition assistant for clinical trial Data Management",
   "author": {
     "name": "hicaosen"

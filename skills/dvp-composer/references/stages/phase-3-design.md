@@ -4,6 +4,32 @@
 
 Design specific, executable validation check rules for each data module. Every check must be clear, testable, and actionable.
 
+## Read Previous Phase
+
+Before starting Phase 3 work, read these files from `dvp_workspace/`:
+
+- `study-overview.md` (Phase 1) — Study context
+- `visit-schedule.md` (Phase 1) — Visit structure
+- `data-modules.md` (Phase 1) — Data modules and key fields
+- `scope.md` (Phase 2) — Which modules are in scope
+- `key-data.md` (Phase 2) — Critical data to cover
+- `risk-assessment.md` (Phase 2) — Risk priorities
+- `validation-methods.md` (Phase 2) — Validation method per module
+- `module-strategy.md` (Phase 2) — Per-module strategy
+- `assumptions-and-gaps.md` (Phase 1/2) — Known assumptions and gaps
+
+## Deliverables
+
+Before the [Done] step, write the following files to `dvp_workspace/`:
+
+| File | Content |
+|------|---------|
+| `checks.md` | Complete check rules list organized by module. Each check has all 10 fields in a table. |
+| `check-rationale.md` | Design decisions: why checks were designed this way, boundary conditions, items not confirmed from materials |
+| `unresolved.md` | Issues still unresolved, items needing Phase 4 confirmation or user input |
+
+If new assumptions or gaps are identified, append them to `assumptions-and-gaps.md`.
+
 ## Interaction Guide
 
 Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses **[Collect]**, **[Confirm]**, and **[Done]** question types.
@@ -122,6 +148,8 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 
 ### Step 6: Present Check Rules
 
+Before presenting the summary, write all three deliverable files listed in the Deliverables section above to `dvp_workspace/`. Also update `assumptions-and-gaps.md` if new items were identified.
+
 **[Done]** Output the complete check list organized by module. For each module:
 - List all checks with full details
 - Summarize check count and coverage
@@ -129,6 +157,12 @@ At the start of this phase, create the following sub-tasks. Each should `addBloc
 
 ```
 [Done] Phase 3: Design Checks
+  Deliverables written to dvp_workspace/:
+  - checks.md — Complete check rules list
+  - check-rationale.md — Design decisions and rationale
+  - unresolved.md — Items needing Phase 4 resolution
+  - assumptions-and-gaps.md — [Updated / No changes]
+
   Output summary:
   - Total check rules: [N]
   - Per-module breakdown:

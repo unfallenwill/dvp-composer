@@ -4,6 +4,33 @@
 
 Confirm that all designed check rules are correct, feasible, and do not conflict with existing systems or analysis plans. Resolve any issues before drafting.
 
+## Read Previous Phase
+
+Before starting Phase 4 work, read these files from `dvp_workspace/`:
+
+- `checks.md` (Phase 3) — The check list to be aligned
+- `check-rationale.md` (Phase 3) — Design decisions to review
+- `unresolved.md` (Phase 3) — Items to resolve in this phase
+- `scope.md` (Phase 2) — Scope boundaries for alignment verification
+- `key-data.md` (Phase 2) — Key data for coverage verification
+- `risk-assessment.md` (Phase 2) — Risk areas for coverage verification
+- `materials-received.md` (Phase 1) — Available materials (for checking evidence)
+- `assumptions-and-gaps.md` — Resolve what you can here
+
+Resolve items from `unresolved.md` during this phase. For each resolved item, update `assumptions-and-gaps.md` to mark it as Resolved.
+
+## Deliverables
+
+Before the [Done] step, write the following files to `dvp_workspace/`:
+
+| File | Content |
+|------|---------|
+| `checks-final.md` | Aligned final check list (replaces `checks.md` from Phase 3). Same 10-field structure per check. This is the authoritative check list for downstream phases. |
+| `alignment-report.md` | Corrections made: which checks were deleted, merged, or modified and why; conflict resolution results |
+| `edit-check-overlap.md` | Overlap analysis with existing Edit Checks and handling decision for each overlap |
+
+Also update `assumptions-and-gaps.md` to mark resolved items and add any new items discovered during alignment.
+
 ## Interaction Guide
 
 Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses **[Conflict]**, **[Confirm]**, and **[Done]** question types.
@@ -101,10 +128,18 @@ Batch all conflict items into one prompt.
 
 ### Step 6: Present Alignment Results
 
+Before presenting the summary, write all three deliverable files listed in the Deliverables section above to `dvp_workspace/`. Also update `assumptions-and-gaps.md` to mark resolved items.
+
 **[Done]** Output a structured alignment report:
 
 ```
 [Done] Phase 4: Alignment
+  Deliverables written to dvp_workspace/:
+  - checks-final.md — Aligned final check list
+  - alignment-report.md — Corrections and resolution log
+  - edit-check-overlap.md — Edit check overlap analysis
+  - assumptions-and-gaps.md — [Updated / No changes]
+
   Output summary:
   - Protocol alignment: [N] confirmed / [N] corrected
   - Edit Check conflicts: [N] overlaps resolved ([N] removed / [N] merged / [N] kept)

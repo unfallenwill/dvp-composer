@@ -4,6 +4,32 @@
 
 Define the validation scope, identify key data and risk points, and establish the overall validation strategy.
 
+## Read Previous Phase
+
+Before starting Phase 2 work, read these files from `dvp_workspace/`:
+
+- `study-overview.md` — Study context and endpoints
+- `materials-received.md` — Materials inventory
+- `visit-schedule.md` — Visit structure
+- `data-modules.md` — Data modules and key fields
+- `assumptions-and-gaps.md` — Assumptions and gaps
+
+These contain all Phase 1 outputs. Use them as the factual basis for scope and strategy decisions.
+
+## Deliverables
+
+Before the [Done] step, write the following files to `dvp_workspace/`:
+
+| File | Content |
+|------|---------|
+| `scope.md` | Per-module classification (DVP check / Edit Check covered / Excluded) with exclusion reasons |
+| `key-data.md` | Critical data list: primary endpoints, safety data, submission key fields |
+| `risk-assessment.md` | High/medium/low risk areas with rationale for each rating |
+| `validation-methods.md` | Per-module validation method matrix (method + rationale) |
+| `module-strategy.md` | Per-module validation strategy key points |
+
+If new assumptions or gaps are identified during this phase, append them to `assumptions-and-gaps.md`.
+
 ## Interaction Guide
 
 Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses **[Confirm]** and **[Done]** question types.
@@ -112,6 +138,8 @@ Present as a recommendation:
 
 ### Step 6: Present Strategy
 
+Before presenting the summary, write all five deliverable files listed in the Deliverables section above to `dvp_workspace/`. Also update `assumptions-and-gaps.md` if new items were identified.
+
 **[Done]** Output the validation strategy as a structured document including:
 - Scope definition (in-scope vs out-of-scope modules)
 - Key data list
@@ -121,6 +149,14 @@ Present as a recommendation:
 
 ```
 [Done] Phase 2: Scope & Strategy
+  Deliverables written to dvp_workspace/:
+  - scope.md — Module scope classification
+  - key-data.md — Critical data list
+  - risk-assessment.md — Risk areas with ratings
+  - validation-methods.md — Method matrix
+  - module-strategy.md — Per-module strategy
+  - assumptions-and-gaps.md — [Updated / No changes]
+
   Output summary:
   - Validation scope: [in-scope / out-of-scope module list]
   - Key data: [list]

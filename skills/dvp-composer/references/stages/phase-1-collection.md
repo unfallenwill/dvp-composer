@@ -4,6 +4,18 @@
 
 Gather all input materials needed to compose the DVP. Understand the study context, key data, and validation requirements.
 
+## Deliverables
+
+Before the [Done] step, write the following files to `dvp_workspace/`:
+
+| File | Content |
+|------|---------|
+| `study-overview.md` | Protocol number, phase, indication, sponsor, study design, primary/secondary endpoints |
+| `materials-received.md` | Materials received, format, coverage, and missing items |
+| `visit-schedule.md` | Visit numbers, names, windows (in days), assessments per visit (as a table) |
+| `data-modules.md` | Identified domains/modules, key fields per module (as a table) |
+| `assumptions-and-gaps.md` | Assumptions made + unresolved gaps (as a table with Status column: Open/Resolved) |
+
 ## Interaction Guide
 
 Follow the Interaction Protocol defined in `SKILL.md`. This phase primarily uses **[Collect]** and **[Done]** question types.
@@ -102,6 +114,8 @@ Batch all gap questions together. Example:
 
 ### Step 5: Present Summary
 
+Before presenting the summary, write all five deliverable files listed in the Deliverables section above to `dvp_workspace/`.
+
 **[Done]** Output a structured summary including:
 - Study overview (protocol number, indication, phase, design)
 - Available materials list
@@ -111,6 +125,13 @@ Batch all gap questions together. Example:
 
 ```
 [Done] Phase 1: Collection
+  Deliverables written to dvp_workspace/:
+  - study-overview.md — Study design and endpoints
+  - materials-received.md — Materials inventory
+  - visit-schedule.md — Visit schedule with assessments
+  - data-modules.md — Data modules and key fields
+  - assumptions-and-gaps.md — Assumptions and gaps
+
   Output summary:
   - Study overview: [Protocol / Phase / Indication / Design]
   - Available materials: [list]
